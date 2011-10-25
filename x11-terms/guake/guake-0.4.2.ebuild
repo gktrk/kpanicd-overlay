@@ -2,10 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/x11-terms/guake/guake-0.4.2.ebuild,v 1.4 2011/03/23 06:22:50 ssuominen Exp $
 
-EAPI=2
+EAPI=3
 
 GCONF_DEBUG=no
-PYTHON_DEPEND="2:2.6"
+PYTHON_DEPEND="2:2.7"
 
 inherit eutils gnome2 python multilib
 
@@ -39,16 +39,17 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}"/${P}-int-ssl-port.patch \
-		"${FILESDIR}"/${P}-prefs-spinbox.patch \
-		"${FILESDIR}"/${P}-smart-tab-enumaration.patch \
-		"${FILESDIR}"/${P}-tabs-at-the-top.patch
+	epatch "${FILESDIR}"/${P}-int-ssl-port.patch
+	epatch "${FILESDIR}"/${P}-prefs-spinbox.patch
+	epatch "${FILESDIR}"/${P}-smart-tab-enumaration.patch
+	epatch "${FILESDIR}"/${P}-tabs-at-the-top.patch
+
 	gnome2_src_prepare
 }
 
 src_install() {
 	gnome2_src_install
-	find "${D}" -name '*.la' -delete
+	find "${D}" -name '*.la' -exec rm -f {} +
 }
 
 pkg_postinst() {
