@@ -5,7 +5,7 @@
 EAPI=3
 
 GCONF_DEBUG=no
-PYTHON_DEPEND="2:2.7"
+PYTHON_DEPEND="3"
 
 inherit eutils gnome2 python multilib
 
