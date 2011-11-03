@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <herd>no-herd</herd>
+  <maintainer>
+    <name>gokturk</name>
+  </maintainer>
+  <longdescription lang="en">
+    The Flexible Filesystem Benchmark (FFSB) is a filesystem performance
+    measurement tool.  It uses customizable profiles to measure of different
+    workloads, and it supports multiple groups of threads across multiple
+    filesystems.
+  </longdescription>
+  <use>
+    <flag name="examples">
+      Install example benchmark profiles
+    </flag>
+  </use>
+</pkgmetadata>
