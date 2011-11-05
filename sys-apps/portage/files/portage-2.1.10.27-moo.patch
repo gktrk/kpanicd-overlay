@@ -1,0 +1,19 @@
+--- pym/_emerge/main.py.orig	2011-11-05 06:51:13.000000000 -0400
++++ pym/_emerge/main.py	2011-11-05 06:52:18.000000000 -0400
+@@ -1680,6 +1680,7 @@
+ 	del mytrees, mydb
+ 
+ 	if "moo" in myfiles:
++		myfiles = filter(lambda x: x not in "moo", myfiles)
+ 		print("""
+ 
+   Larry loves Gentoo (""" + platform.system() + """)
+@@ -1694,6 +1695,8 @@
+                 ||     ||
+ 
+ """)
++		if not myaction and not myfiles:
++			return 0
+ 
+ 	for x in myfiles:
+ 		ext = os.path.splitext(x)[1]
