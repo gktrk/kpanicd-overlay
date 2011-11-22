@@ -1,0 +1,296 @@
+--- misc.h.orig	2011-11-22 00:49:40.279392166 -0500
++++ misc.h	2011-11-22 00:47:15.500638935 -0500
+@@ -103,11 +103,11 @@
+   _fatal(__FILE__, __FUNCTION__, __LINE__, fmt, ## args)
+ 
+ void
+-_fatal(char *file, char *func, int line, char *fmt, ...)
++_fatal(const char *file, const char *func, int line, const char *fmt, ...)
+ __attribute__ ((noreturn));
+ #else /* !__GNUC__ */
+ void
+-fatal(char *fmt, ...);
++fatal(const char *fmt, ...);
+ #endif /* !__GNUC__ */
+ 
+ #ifdef __GNUC__
+@@ -116,11 +116,11 @@
+   _panic(__FILE__, __FUNCTION__, __LINE__, fmt, ## args)
+ 
+ void
+-_panic(char *file, char *func, int line, char *fmt, ...)
++_panic(const char *file, const char *func, int line, const char *fmt, ...)
+ __attribute__ ((noreturn));
+ #else /* !__GNUC__ */
+ void
+-panic(char *fmt, ...);
++panic(const char *fmt, ...);
+ #endif /* !__GNUC__ */
+ 
+ #ifdef __GNUC__
+@@ -129,10 +129,10 @@
+   _warn(__FILE__, __FUNCTION__, __LINE__, fmt, ## args)
+ 
+ void
+-_warn(char *file, char *func, int line, char *fmt, ...);
++_warn(const char *file, const char *func, int line, const char *fmt, ...);
+ #else /* !__GNUC__ */
+ void
+-warn(char *fmt, ...);
++warn(const char *fmt, ...);
+ #endif /* !__GNUC__ */
+ 
+ #ifdef __GNUC__
+@@ -141,10 +141,10 @@
+   _info(__FILE__, __FUNCTION__, __LINE__, fmt, ## args)
+ 
+ void
+-_info(char *file, char *func, int line, char *fmt, ...);
++_info(const char *file, const char *func, int line, const char *fmt, ...);
+ #else /* !__GNUC__ */
+ void
+-info(char *fmt, ...);
++info(const char *fmt, ...);
+ #endif /* !__GNUC__ */
+ 
+ #ifdef DEBUG
+@@ -158,10 +158,10 @@
+     } while(0)
+ 
+ void
+-_debug(char *file, char *func, int line, char *fmt, ...);
++_debug(const char *file, const char *func, int line, const char *fmt, ...);
+ #else /* !__GNUC__ */
+ void
+-debug(char *fmt, ...);
++debug(const char *fmt, ...);
+ #endif /* !__GNUC__ */
+ 
+ #else /* !DEBUG */
+@@ -170,7 +170,7 @@
+ #define debug(fmt, args...)
+ #else /* !__GNUC__ */
+ /* the optimizer should eliminate this call! */
+-static void debug(char *fmt, ...) {}
++static void debug(const char *fmt, ...) {}
+ #endif /* !__GNUC__ */
+ 
+ #endif /* !DEBUG */
+@@ -223,16 +223,16 @@
+ /* portable 64-bit I/O package */
+ 
+ /* portable vsprintf with qword support, returns end pointer */
+-char *myvsprintf(char *obuf, char *format, va_list v);
++char *myvsprintf(char *obuf, const char *format, va_list v);
+ 
+ /* portable sprintf with qword support, returns end pointer */
+-char *mysprintf(char *obuf, char *format, ...);
++char *mysprintf(char *obuf, const char *format, ...);
+ 
+ /* portable vfprintf with qword support, returns end pointer */
+-void myvfprintf(FILE *stream, char *format, va_list v);
++void myvfprintf(FILE *stream, const char *format, va_list v);
+ 
+ /* portable fprintf with qword support, returns end pointer */
+-void myfprintf(FILE *stream, char *format, ...);
++void myfprintf(FILE *stream, const char *format, ...);
+ 
+ #ifdef HOST_HAS_QWORD
+ 
+--- misc.c.orig	2011-11-22 00:49:36.199737283 -0500
++++ misc.c	2011-11-22 00:48:42.485283005 -0500
+@@ -86,10 +86,10 @@
+ /* declare a fatal run-time error, calls fatal hook function */
+ #ifdef __GNUC__
+ void
+-_fatal(char *file, char *func, int line, char *fmt, ...)
++_fatal(const char *file, const char *func, int line, const char *fmt, ...)
+ #else /* !__GNUC__ */
+ void
+-fatal(char *fmt, ...)
++fatal(const char *fmt, ...)
+ #endif /* __GNUC__ */
+ {
+   va_list v;
+@@ -110,10 +110,10 @@
+ /* declare a panic situation, dumps core */
+ #ifdef __GNUC__
+ void
+-_panic(char *file, char *func, int line, char *fmt, ...)
++_panic(const char *file, const char *func, int line, const char *fmt, ...)
+ #else /* !__GNUC__ */
+ void
+-panic(char *fmt, ...)
++panic(const char *fmt, ...)
+ #endif /* __GNUC__ */
+ {
+   va_list v;
+@@ -133,10 +133,10 @@
+ /* declare a warning */
+ #ifdef __GNUC__
+ void
+-_warn(char *file, char *func, int line, char *fmt, ...)
++_warn(const char *file, const char *func, int line, const char *fmt, ...)
+ #else /* !__GNUC__ */
+ void
+-warn(char *fmt, ...)
++warn(const char *fmt, ...)
+ #endif /* __GNUC__ */
+ {
+   va_list v;
+@@ -154,10 +154,10 @@
+ /* print general information */
+ #ifdef __GNUC__
+ void
+-_info(char *file, char *func, int line, char *fmt, ...)
++_info(const char *file, const char *func, int line, const char *fmt, ...)
+ #else /* !__GNUC__ */
+ void
+-info(char *fmt, ...)
++info(const char *fmt, ...)
+ #endif /* __GNUC__ */
+ {
+   va_list v;
+@@ -175,10 +175,10 @@
+ /* print a debugging message */
+ #ifdef __GNUC__
+ void
+-_debug(char *file, char *func, int line, char *fmt, ...)
++_debug(const char *file, const char *func, int line, const char *fmt, ...)
+ #else /* !__GNUC__ */
+ void
+-debug(char *fmt, ...)
++debug(const char *fmt, ...)
+ #endif /* __GNUC__ */
+ {
+     va_list v;
+@@ -414,7 +414,7 @@
+ 
+ /* portable vsprintf with qword support, returns end pointer */
+ char *
+-myvsprintf(char *obuf, char *format, va_list v)
++myvsprintf(char *obuf, const char *format, va_list v)
+ {
+   static char _blanks[] = "                    ";
+   static char _zeroes[] = "00000000000000000000";
+@@ -743,7 +743,7 @@
+ 
+ /* portable sprintf with qword support, returns end pointer */
+ char *
+-mysprintf(char *obuf, char *format, ...)
++mysprintf(char *obuf, const char *format, ...)
+ {
+   /* vararg parameters */
+   va_list v;
+@@ -754,7 +754,7 @@
+ 
+ /* portable vfprintf with qword support, returns end pointer */
+ void
+-myvfprintf(FILE *stream, char *format, va_list v)
++myvfprintf(FILE *stream, const char *format, va_list v)
+ {
+   /* temp buffer */
+   char buf[2048];
+@@ -765,7 +765,7 @@
+ 
+ /* portable fprintf with qword support, returns end pointer */
+ void
+-myfprintf(FILE *stream, char *format, ...)
++myfprintf(FILE *stream, const char *format, ...)
+ {
+   /* temp buffer */
+   char buf[2048];
+--- sysprobe.c.orig	2011-11-22 01:10:01.374468182 -0500
++++ sysprobe.c	2011-11-22 01:09:26.149480190 -0500
+@@ -260,8 +260,8 @@
+     }
+   else if (argc == 2 && !strcmp(argv[1], "-t"))
+     {
+-      fprintf(stdout, "sizeof(int) = %d\n", sizeof(int));
+-      fprintf(stdout, "sizeof(long) = %d\n", sizeof(long));
++      fprintf(stdout, "sizeof(int) = %ld\n", sizeof(int));
++      fprintf(stdout, "sizeof(long) = %ld\n", sizeof(long));
+     }
+ 
+ 
+--- syscall.c.orig	2011-11-22 01:12:52.392833569 -0500
++++ syscall.c	2011-11-22 01:11:53.686859047 -0500
+@@ -1189,7 +1189,7 @@
+     case OSF_SYS_old_recvfrom:
+     case OSF_SYS_recvfrom:
+       {
+-	int addr_len;
++	socklen_t addr_len;
+ 	char *buf;
+ 	struct sockaddr *a_sock;
+       
+@@ -3107,7 +3107,7 @@
+ 	/* get socket name */
+ 	char *buf;
+ 	word_t osf_addrlen;
+-	int addrlen;
++	socklen_t addrlen;
+ 
+ 	/* get simulator memory parameters to host memory */
+ 	mem_bcopy(mem_fn, mem, Read,
+@@ -3159,7 +3159,7 @@
+ 	/* get socket name */
+ 	char *buf;
+ 	word_t osf_addrlen;
+-	int addrlen;
++	socklen_t addrlen;
+ 
+ 	/* get simulator memory parameters to host memory */
+ 	mem_bcopy(mem_fn, mem, Read,
+--- cacti/main.c.orig	2011-11-22 02:05:06.219781024 -0500
++++ cacti/main.c	2011-11-22 02:04:47.122278998 -0500
+@@ -41,6 +41,8 @@
+  *------------------------------------------------------------*/
+ 
+ 
++#include <stdlib.h>
++#undef NULL
+ #include "def.h"
+ 
+ 
+@@ -59,3 +61,5 @@
+     calculate_time(&result,&parameters);
+     output_data(&result,&parameters);
+ }
++
++#undef NULL
+--- cacti/io.c.orig	2011-11-22 02:04:03.026735265 -0500
++++ cacti/io.c	2011-11-22 02:03:52.345571913 -0500
+@@ -41,7 +41,9 @@
+ 
+ 
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <math.h>
++#undef NULL
+ #include "def.h"
+ 
+ #define NEXTINT(a) skip(); scanf("%d",&(a));
+@@ -199,3 +201,4 @@
+ }
+ 
+ 							   
++#undef NULL
+--- cacti/time.c.orig	2011-11-22 02:05:29.731936003 -0500
++++ cacti/time.c	2011-11-22 02:05:43.275872900 -0500
+@@ -40,7 +40,10 @@
+  * SOFTWARE.
+  *------------------------------------------------------------*/
+ 
++#include <stdio.h>
++
+ #include <math.h>
++#undef NULL
+ #include "def.h"
+ 
+ 
+@@ -1040,3 +1043,4 @@
+ 
+ }
+    
++#undef NULL
