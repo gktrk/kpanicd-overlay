@@ -43,12 +43,12 @@ src_prepare() {
 	epatch "${FILESDIR}"/${P}-prefs-spinbox.patch
 	epatch "${FILESDIR}"/${P}-smart-tab-enumaration.patch
 	epatch "${FILESDIR}"/${P}-tabs-at-the-top.patch
-	epatch "${FILESDIR}"/${P}-use-python2.patch
 
 	gnome2_src_prepare
 }
 
 src_install() {
+	epatch "${FILESDIR}"/${P}-use-python2.patch
 	gnome2_src_install
 	find "${D}" -name '*.la' -exec rm -f {} +
 }
