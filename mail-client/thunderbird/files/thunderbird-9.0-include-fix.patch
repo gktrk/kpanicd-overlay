@@ -1,0 +1,50 @@
+--- ./comm-release/mozilla/ipc/chromium/src/base/time_posix.cc.orig	2012-01-06 04:18:24.000000000 -0500
++++ ./comm-release/mozilla/ipc/chromium/src/base/time_posix.cc	2012-01-06 04:18:27.000000000 -0500
+@@ -16,6 +16,10 @@
+ 
+ #include <limits>
+ 
++#if defined(OS_POSIX)
++#include <unistd.h>
++#endif
++
+ #include "base/basictypes.h"
+ #include "base/logging.h"
+ 
+--- ./comm-release/mozilla/ipc/chromium/src/base/message_pump_libevent.cc.orig	2012-01-06 04:08:15.000000000 -0500
++++ ./comm-release/mozilla/ipc/chromium/src/base/message_pump_libevent.cc	2012-01-06 04:09:30.000000000 -0500
+@@ -7,6 +7,10 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ 
++#if defined(OS_POSIX)
++#include <unistd.h>
++#endif
++
+ #include "eintr_wrapper.h"
+ #include "base/logging.h"
+ #include "base/scoped_nsautorelease_pool.h"
+--- ./comm-release/mozilla/ipc/chromium/src/base/file_util_linux.cc.orig	2012-01-06 04:11:02.000000000 -0500
++++ ./comm-release/mozilla/ipc/chromium/src/base/file_util_linux.cc	2012-01-06 04:12:52.000000000 -0500
+@@ -9,6 +9,10 @@
+ #include <string>
+ #include <vector>
+ 
++#if defined(OS_POSIX)
++#include <unistd.h>
++#endif
++
+ #include "base/eintr_wrapper.h"
+ #include "base/file_path.h"
+ #include "base/string_util.h"
+--- ./comm-release/mozilla/ipc/chromium/src/base/file_util.cc.orig	2012-01-06 03:48:31.000000000 -0500
++++ ./comm-release/mozilla/ipc/chromium/src/base/file_util.cc	2012-01-06 04:05:14.000000000 -0500
+@@ -8,7 +8,7 @@
+ #include <io.h>
+ #endif
+ #include <stdio.h>
+-#if defined(ANDROID)
++#if defined(ANDROID) || defined(OS_POSIX)
+ #include <unistd.h>
+ #endif
+ 
