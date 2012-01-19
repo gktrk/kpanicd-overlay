@@ -15,5 +15,4 @@ IUSE=""
 
 RDEPEND="dev-vcs/git[perl]"
 DEPEND="virtual/perl-Module-Build
-		virtual/perl-ExtUtils-MakeMaker
 		${RDEPEND}"
