@@ -1,0 +1,46 @@
+# See bug #397909
+--- ./ipc/chromium/src/base/time_posix.cc.orig	2012-01-19 14:57:11.000000000 -0500
++++ ./ipc/chromium/src/base/time_posix.cc	2012-01-19 14:57:49.000000000 -0500
+@@ -4,6 +4,8 @@
+ 
+ #include "base/time.h"
+ 
++#include <unistd.h>
++
+ #ifdef OS_MACOSX
+ #include <mach/mach_time.h>
+ #endif
+--- ./ipc/chromium/src/base/message_pump_libevent.cc.orig	2012-01-19 14:48:09.000000000 -0500
++++ ./ipc/chromium/src/base/message_pump_libevent.cc	2012-01-19 14:49:24.000000000 -0500
+@@ -7,6 +7,10 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ 
++#if defined(OS_POSIX)
++#include <unistd.h>
++#endif
++
+ #include "eintr_wrapper.h"
+ #include "base/logging.h"
+ #include "base/scoped_nsautorelease_pool.h"
+--- ./ipc/chromium/src/base/file_util_linux.cc.orig	2012-01-19 14:53:38.000000000 -0500
++++ ./ipc/chromium/src/base/file_util_linux.cc	2012-01-19 14:54:18.000000000 -0500
+@@ -4,6 +4,7 @@
+ 
+ #include "base/file_util.h"
+ 
++#include <unistd.h>
+ #include <fcntl.h>
+ 
+ #include <string>
+--- ./ipc/chromium/src/base/file_util.cc.orig	2012-01-19 14:44:34.000000000 -0500
++++ ./ipc/chromium/src/base/file_util.cc	2012-01-19 14:44:52.000000000 -0500
+@@ -8,7 +8,7 @@
+ #include <io.h>
+ #endif
+ #include <stdio.h>
+-#if defined(ANDROID)
++#if defined(ANDROID) || defined(OS_POSIX)
+ #include <unistd.h>
+ #endif
+ 

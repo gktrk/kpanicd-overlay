@@ -1,0 +1,26 @@
+# gcc-7.0 introduces C++11 user-defined-literals extension.
+# Fix the source to comply.
+# See:
+#   * http://gcc.gnu.org/bugzilla/show_bug.cgi?id=50917
+#   * http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2765.pdf
+
+--- ./xpcom/build/nsXPCOMPrivate.h.orig	2012-01-19 14:38:18.000000000 -0500
++++ ./xpcom/build/nsXPCOMPrivate.h	2012-01-19 14:39:19.000000000 -0500
+@@ -257,7 +257,7 @@
+ #else // Unix
+ #include <limits.h> // for PATH_MAX
+ 
+-#define XPCOM_DLL "libxpcom"MOZ_DLL_SUFFIX
++#define XPCOM_DLL "libxpcom" MOZ_DLL_SUFFIX
+ 
+ // you have to love apple..
+ #ifdef XP_MACOSX  
+@@ -266,7 +266,7 @@
+ #define XUL_DLL            "XUL"
+ #else
+ #define XPCOM_SEARCH_KEY  "LD_LIBRARY_PATH"
+-#define XUL_DLL   "libxul"MOZ_DLL_SUFFIX
++#define XUL_DLL   "libxul" MOZ_DLL_SUFFIX
+ #endif
+ 
+ #define GRE_CONF_NAME ".gre.config"

@@ -1,0 +1,13 @@
+# Adapted from upstream Bug #557125
+--- ./toolkit/crashreporter/google-breakpad/src/common/linux/Makefile.in.orig	2012-01-19 16:00:54.000000000 -0500
++++ ./toolkit/crashreporter/google-breakpad/src/common/linux/Makefile.in	2012-01-19 16:00:57.000000000 -0500
+@@ -45,6 +45,9 @@
+ LIBRARY_NAME	= breakpad_linux_common_s
+ HOST_LIBRARY_NAME = host_breakpad_linux_common_s
+ 
++# Don't use STL wrappers; google-breakpad isn't Gecko code
++STL_FLAGS = 
++
+ LOCAL_INCLUDES 	= -I$(srcdir)/../..
+ 
+ CPPSRCS	= \
