@@ -1,66 +1,61 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/mail-client/thunderbird/thunderbird-9.0.ebuild,v 1.2 2012/01/05 23:33:34 anarchy Exp $
+# $Header: /var/cvsroot/gentoo-x86/mail-client/thunderbird/thunderbird-8.0.ebuild,v 1.3 2011/11/13 17:13:47 polynomial-c Exp $
 
 EAPI="3"
 WANT_AUTOCONF="2.1"
 
-inherit flag-o-matic toolchain-funcs mozconfig-3 makeedit multilib mozextension autotools pax-utils python check-reqs nsplugins
+# This list can be updated using scripts/get_langs.sh from the mozilla overlay
+MOZ_LANGS=(ar ast be bg bn-BD br ca cs da de el en en-GB en-US es-AR es-ES et eu fi
+fr fy-NL ga-IE gd gl he hu id is it ja ko lt nb-NO nl nn-NO pa-IN pl pt-BR pt-PT
+rm ro ru si sk sl sq sr sv-SE ta-LK tr uk vi zh-CN zh-TW)
 
-TB_PV="${PV/_beta/b}"
-TB_P="${PN}-${TB_PV}"
-EMVER="1.3.4"
+# Convert the ebuild version to the upstream mozilla version, used by mozlinguas
+MOZ_PV="${PV/_beta/b}"
+MOZ_P="${PN}-${MOZ_PV}"
+
+# Enigmail version
+EMVER="1.3.5"
+# Upstream ftp release URI that's used by mozlinguas.eclass
+# We don't use the http mirror because it deletes old tarballs.
+MOZ_FTP_URI="ftp://ftp.mozilla.org/pub/${PN}/releases/"
+
+inherit flag-o-matic toolchain-funcs mozconfig-3 makeedit multilib autotools pax-utils python check-reqs nsplugins mozlinguas
 
 DESCRIPTION="Thunderbird Mail Client"
 HOMEPAGE="http://www.mozilla.com/en-US/thunderbird/"
 
-KEYWORDS="~alpha ~amd64 ~arm ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="~alpha ~amd64 ~arm ~ppc ~ppc64 ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 SLOT="0"
 LICENSE="|| ( MPL-1.1 GPL-2 LGPL-2.1 )"
-IUSE="bindist gconf +crashreporter +crypt +ipc +lightning mozdom +webm"
-PATCH="${P}-patches-0.1"
-PATCHFF="firefox-${PV}-patches-0.5"
+IUSE="bindist gconf +crashreporter +crypt +ipc +lightning +minimal mozdom +webm"
 
-FTP_URI="ftp://ftp.mozilla.org/pub/${PN}/releases/"
-SRC_URI="${FTP_URI}/${TB_PV}/source/${TB_P}.source.tar.bz2
+PATCH="thunderbird-10.0-patches-0.1"
+PATCHFF="firefox-10.0-patches-0.5"
+
+SRC_URI="${SRC_URI}
+	${MOZ_FTP_URI}${MOZ_PV}/source/${MOZ_P}.source.tar.bz2
 	crypt? ( http://www.mozilla-enigmail.org/download/source/enigmail-${EMVER}.tar.gz )
 	http://dev.gentoo.org/~anarchy/mozilla/patchsets/${PATCH}.tar.xz
 	http://dev.gentoo.org/~anarchy/mozilla/patchsets/${PATCHFF}.tar.xz"
 
-if ! [[ ${PV} =~ alpha|beta ]]; then
-	# This list can be updated using scripts/get_langs.sh from the mozilla overlay
-	LANGS=(ar be bg bn-BD br ca cs da de el en en-GB en-US es-AR es-ES et eu fi
-	fr fy-NL ga-IE gd gl he hu id is it ja ko lt nb-NO nl nn-NO pa-IN pl pt-BR
-	pt-PT rm ro ru si sk sl sq sv-SE ta-LK tr uk vi zh-CN zh-TW)
-
-	for X in "${LANGS[@]}" ; do
-		# en and en_US are handled internally
-		if [[ ${X} != en ]] && [[ ${X} != en-US ]]; then
-			SRC_URI="${SRC_URI}
-				linguas_${X/-/_}? ( ${FTP_URI}/${TB_PV}/linux-i686/xpi/${X}.xpi -> ${P}-${X}.xpi )"
-		fi
-		IUSE="${IUSE} linguas_${X/-/_}"
-		# Install all the specific locale xpis if there's no generic locale xpi
-		# Example: there's no pt.xpi, so install all pt-*.xpi
-		if ! has ${X%%-*} "${LANGS[@]}"; then
-			SRC_URI="${SRC_URI}
-				linguas_${X%%-*}? ( ${FTP_URI}/${TB_PV}/linux-i686/xpi/${X}.xpi -> ${P}-${X}.xpi )"
-			IUSE="${IUSE} linguas_${X%%-*}"
-		fi
-	done
-fi
+ASM_DEPEND=">=dev-lang/yasm-1.1"
 
 RDEPEND=">=sys-devel/binutils-2.16.1
-	>=dev-libs/nss-3.12.10
+	>=dev-libs/nss-3.13.1
 	>=dev-libs/nspr-4.8.8
+	>=dev-libs/glib-2.26
 	crashreporter? ( net-misc/curl )
 	gconf? ( >=gnome-base/gconf-1.2.1:2 )
 	media-libs/libpng[apng]
-	webm? ( media-libs/libvpx
+	>=x11-libs/cairo-1.10
+	>=x11-libs/pango-1.14.0
+	>=x11-libs/gtk+-2.14
+	webm? ( >=media-libs/libvpx-0.9.7
 		media-libs/alsa-lib )
 	virtual/libffi
 	!x11-plugins/enigmail
-	system-sqlite? ( >=dev-db/sqlite-3.7.5[fts3,secure-delete,unlock-notify,debug=] )
+	system-sqlite? ( >=dev-db/sqlite-3.7.7.1[fts3,secure-delete,unlock-notify,debug=] )
 	crypt?  ( || (
 		( >=app-crypt/gnupg-2.0
 			|| (
@@ -71,37 +66,12 @@ RDEPEND=">=sys-devel/binutils-2.16.1
 		=app-crypt/gnupg-1.4*
 	) )"
 
-DEPEND="${RDEPEND}"
+DEPEND="${RDEPEND}
+	dev-util/pkgconfig
+	webm? ( x86? ( ${ASM_DEPEND} )
+		amd64? ( ${ASM_DEPEND} ) )"
 
 S="${WORKDIR}"/comm-release
-
-# TODO: Move all the linguas crap to an eclass
-linguas() {
-	# Generate the list of language packs called "linguas"
-	# This list is used to install the xpi language packs
-	local LINGUA
-	for LINGUA in ${LINGUAS}; do
-		if has ${LINGUA} en en_US; then
-			# For mozilla products, en and en_US are handled internally
-			continue
-		# If this language is supported by ${P},
-		elif has ${LINGUA} "${LANGS[@]//-/_}"; then
-			# Add the language to linguas, if it isn't already there
-			has ${LINGUA//_/-} "${linguas[@]}" || linguas+=(${LINGUA//_/-})
-			continue
-		# For each short LINGUA that isn't in LANGS,
-		# add *all* long LANGS to the linguas list
-		elif ! has ${LINGUA%%-*} "${LANGS[@]}"; then
-			for LANG in "${LANGS[@]}"; do
-				if [[ ${LANG} == ${LINGUA}-* ]]; then
-					has ${LANG} "${linguas[@]}" || linguas+=(${LANG})
-					continue 2
-				fi
-			done
-		fi
-		ewarn "Sorry, but ${P} does not support the ${LINGUA} locale"
-	done
-}
 
 pkg_setup() {
 	moz_pkgsetup
@@ -124,15 +94,13 @@ pkg_setup() {
 src_unpack() {
 	unpack ${A}
 
-	if ! [[ ${PV} =~ alpha|beta ]]; then
-		linguas
-		for X in "${linguas[@]}"; do
-			xpi_unpack "${P}-${X}.xpi"
-		done
-	fi
+	# Unpack language packs
+	mozlinguas_src_unpack
 }
 
 src_prepare() {
+	epatch "${FILESDIR}/${PN}-9.0-include-fix.patch"
+
 	# Apply our Thunderbird patchset
 	EPATCH_SUFFIX="patch" \
 	EPATCH_FORCE="yes" \
@@ -145,23 +113,8 @@ src_prepare() {
 	epatch "${WORKDIR}/firefox"
 	popd &>/dev/null || die
 
-	# Include missing <unistd.h>
-	epatch "${FILESDIR}/"${P}-include-fix.patch
-
-	if use lightning ; then
-		einfo "Fix lightning version to match upstream release"
-		einfo
-		sed -i -e 's:1.0b8pre:1.0:' "${S}"/calendar/sunbird/config/version.txt \
-			|| die "Failed to correct lightning version"
-	fi
-
 	if use crypt ; then
 		mv "${WORKDIR}"/enigmail "${S}"/mailnews/extensions/enigmail
-		# Ensure enigmail can find its scripts for gpg
-		epatch "${FILESDIR}"/enigmail-1.3.3-bug373733.patch
-		cd "${S}"/mailnews/extensions/enigmail || die
-		./makemake -r 2&> /dev/null
-		sed -i -e 's:@srcdir@:${S}/mailnews/extensions/enigmail:' Makefile.in
 		cd "${S}"
 	fi
 
@@ -194,11 +147,14 @@ src_configure() {
 	# It doesn't compile on alpha without this LDFLAGS
 	use alpha && append-ldflags "-Wl,--no-relax"
 
+	mozconfig_annotate '' --prefix="${EPREFIX}"/usr
+	mozconfig_annotate '' --libdir="${EPREFIX}"/usr/$(get_libdir)
 	mozconfig_annotate '' --enable-extensions="${MEXTENSIONS}"
 	mozconfig_annotate '' --with-default-mozilla-five-home="${EPREFIX}${MOZILLA_FIVE_HOME}"
 	mozconfig_annotate '' --with-user-appdir=.thunderbird
 	mozconfig_annotate '' --with-system-png
 	mozconfig_annotate '' --enable-system-ffi
+	mozconfig_annotate '' --target="${CTARGET:-${CHOST}}"
 
 	# Use enable features
 	mozconfig_use_enable lightning calendar
@@ -208,6 +164,9 @@ src_configure() {
 	if use mozdom; then
 		MEXTENSIONS="${MEXTENSIONS},inspector"
 	fi
+
+	# Use an objdir to keep things organized.
+	echo "mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/tbird" >> "${S}"/.mozconfig
 
 	# Finalize and report settings
 	mozconfig_final
@@ -228,36 +187,46 @@ src_configure() {
 			append-flags -mno-avx
 		fi
 	fi
-
-	CPPFLAGS="${CPPFLAGS}" \
-	CC="$(tc-getCC)" CXX="$(tc-getCXX)" LD="$(tc-getLD)" \
-	econf || die
 }
 
 src_compile() {
-	emake || die
+	CC="$(tc-getCC)" CXX="$(tc-getCXX)" LD="$(tc-getLD)" \
+	MOZ_MAKE_FLAGS="${MAKEOPTS}" \
+	emake -f client.mk || die
 
 	# Only build enigmail extension if crypt enabled.
 	if use crypt ; then
-		emake -C "${S}"/mailnews/extensions/enigmail || die "make enigmail failed"
-		emake -C "${S}"/mailnews/extensions/enigmail xpi || die "make enigmail xpi failed"
+		cd "${S}"/mailnews/extensions/enigmail || die
+		./makemake -r 2&> /dev/null
+		cd "${S}"/tbird/mailnews/extensions/enigmail
+		emake || die "make enigmail failed"
+		emake xpi || die "make enigmail xpi failed"
 	fi
 }
 
 src_install() {
 	declare MOZILLA_FIVE_HOME="/usr/$(get_libdir)/${PN}"
 	declare emid
+	local obj_dir="tbird"
+	cd "${S}/${obj_dir}"
+
+	# Copy our preference before omnijar is created.
+	cp "${FILESDIR}"/thunderbird-gentoo-default-prefs-1.js-1 \
+		"${S}/${obj_dir}/mozilla/dist/bin/defaults/pref/all-gentoo.js" || die
 
 	# Pax mark xpcshell for hardened support, only used for startupcache creation.
-	pax-mark m "${S}"/mozilla/dist/bin/xpcshell
+	pax-mark m "${S}"/${obj_dir}/mozilla/dist/bin/xpcshell
 
 	emake DESTDIR="${D}" install || die "emake install failed"
+
+	# Install language packs
+	mozlinguas_src_install
 
 	if ! use bindist; then
 		newicon "${S}"/other-licenses/branding/thunderbird/content/icon48.png thunderbird-icon.png
 		domenu "${FILESDIR}"/icon/${PN}.desktop
 	else
-		newicon "${S}"/mail/branding/unofficial/content/icon48.png thunderbird-icon-unbranded.png
+		newicon "${S}"/mail/branding/aurora/content/icon48.png thunderbird-icon-unbranded.png
 		newmenu "${FILESDIR}"/icon/${PN}-unbranded.desktop \
 			${PN}.desktop
 
@@ -267,29 +236,29 @@ src_install() {
 
 	if use crypt ; then
 		cd "${T}" || die
-		unzip "${S}"/mozilla/dist/bin/enigmail*.xpi install.rdf || die
+		unzip "${S}"/${obj_dir}/mozilla/dist/bin/enigmail*.xpi install.rdf || die
 		emid=$(sed -n '/<em:id>/!d; s/.*\({.*}\).*/\1/; p; q' install.rdf)
 
 		dodir ${MOZILLA_FIVE_HOME}/extensions/${emid} || die
 		cd "${D}"${MOZILLA_FIVE_HOME}/extensions/${emid} || die
-		unzip "${S}"/mozilla/dist/bin/enigmail*.xpi || die
+		unzip "${S}"/${obj_dir}/mozilla/dist/bin/enigmail*.xpi || die
 	fi
 
 	if use lightning ; then
 		emid="{a62ef8ec-5fdc-40c2-873c-223b8a6925cc}"
 		dodir ${MOZILLA_FIVE_HOME}/extensions/${emid}
 		cd "${ED}"${MOZILLA_FIVE_HOME}/extensions/${emid}
-		unzip "${S}"/mozilla/dist/xpi-stage/gdata-provider.xpi
+		unzip "${S}"/${obj_dir}/mozilla/dist/xpi-stage/gdata-provider.xpi
 
 		emid="calendar-timezones@mozilla.org"
 		dodir ${MOZILLA_FIVE_HOME}/extensions/${emid}
 		cd "${ED}"${MOZILLA_FIVE_HOME}/extensions/${emid}
-		unzip "${S}"/mozilla/dist/xpi-stage/calendar-timezones.xpi
+		unzip "${S}"/${obj_dir}/mozilla/dist/xpi-stage/calendar-timezones.xpi
 
 		emid="{e2fda1a4-762b-4020-b5ad-a41df1933103}"
 		dodir ${MOZILLA_FIVE_HOME}/extensions/${emid}
 		cd "${ED}"${MOZILLA_FIVE_HOME}/extensions/${emid}
-		unzip "${S}"/mozilla/dist/xpi-stage/lightning.xpi
+		unzip "${S}"/${obj_dir}/mozilla/dist/xpi-stage/lightning.xpi
 
 		# Fix mimetype so it shows up as a calendar application in GNOME 3
 		# This requires that the .desktop file was already installed earlier
@@ -298,21 +267,14 @@ src_install() {
 			-i "${ED}"/usr/share/applications/${PN}.desktop
 	fi
 
-	if ! [[ ${PV} =~ alpha|beta ]]; then
-		linguas
-		for X in "${linguas[@]}"; do
-			xpi_install "${WORKDIR}/${P}-${X}"
-		done
-	fi
-
 	pax-mark m "${ED}"/${MOZILLA_FIVE_HOME}/thunderbird-bin
 
-	# Enable very specific settings for thunderbird-3
-	cp "${FILESDIR}"/thunderbird-gentoo-default-prefs-1.js-1 \
-		"${ED}/${MOZILLA_FIVE_HOME}/defaults/pref/all-gentoo.js" || \
-		die "failed to cp thunderbird-gentoo-default-prefs.js"
-
 	share_plugins_dir
+
+	if use minimal; then
+		rm -rf "${ED}"/usr/include "${ED}${MOZILLA_FIVE_HOME}"/{idl,include,lib,sdk} || \
+			die "Failed to remove sdk and headers"
+	fi
 }
 
 pkg_postinst() {
