@@ -1,16 +1,16 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/www-client/firefox/firefox-10.0.1.ebuild,v 1.1 2012/02/11 14:17:56 anarchy Exp $
 
 EAPI="3"
 VIRTUALX_REQUIRED="pgo"
 WANT_AUTOCONF="2.1"
 
 # This list can be updated with scripts/get_langs.sh from the mozilla overlay
-LANGS=(af ak ar ast be bg bn-BD bn-IN br bs ca cs cy da de el en en-GB en-US
-en-ZA eo es-AR es-CL es-ES es-MX et eu fa fi fr fy-NL ga-IE gd gl gu-IN he
-hi-IN hr hu hy-AM id is it ja kk kn ko ku lg lt lv mai mk ml mr nb-NO nl
-nn-NO nso or pa-IN pl pt-BR pt-PT rm ro ru si sk sl son sq sr sv-SE ta ta-LK
+MOZ_LANGS=(af ak ar as ast be bg bn-BD bn-IN br bs ca cs csb cy da de el en
+en-GB en-US en-ZA eo es-AR es-CL es-ES es-MX et eu fa fi fr fy-NL ga-IE gd gl
+gu-IN he hi-IN hr hu hy-AM id is it ja kk kn ko ku lg lt lv mai mk ml mr nb-NO
+nl nn-NO nso or pa-IN pl pt-BR pt-PT rm ro ru si sk sl son sq sr sv-SE ta ta-LK
 te th tr uk vi zh-CN zh-TW zu)
 
 # Convert the ebuild version to the upstream mozilla version, used by mozlinguas
@@ -21,20 +21,20 @@ MOZ_PV="${MOZ_PV/_rc/rc}" # Handle rc for SRC_URI
 # Changeset for alpha snapshot
 CHANGESET="e56ecd8b3a68"
 # Patch version
-PATCH="${PN}-9.0-patches-0.5"
+PATCH="${PN}-10.0-patches-0.5"
 # Upstream ftp release URI that's used by mozlinguas.eclass
 # We don't use the http mirror because it deletes old tarballs.
-FTP_URI="ftp://ftp.mozilla.org/pub/${PN}/releases/"
+MOZ_FTP_URI="ftp://ftp.mozilla.org/pub/${PN}/releases/"
 
 inherit check-reqs flag-o-matic toolchain-funcs eutils gnome2-utils mozconfig-3 multilib pax-utils fdo-mime autotools python virtualx nsplugins mozlinguas
 
 DESCRIPTION="Firefox Web Browser"
 HOMEPAGE="http://www.mozilla.com/firefox"
 
-KEYWORDS="~amd64 ~arm ~ppc ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux"
 SLOT="0"
 LICENSE="|| ( MPL-1.1 GPL-2 LGPL-2.1 )"
-IUSE="bindist +crashreporter +ipc pgo system-sqlite +webm"
+IUSE="bindist +crashreporter +ipc +minimal pgo selinux system-sqlite +webm"
 
 # More URIs appended below...
 SRC_URI="${SRC_URI}
@@ -51,10 +51,11 @@ RDEPEND="
 	>=media-libs/mesa-7.10
 	media-libs/libpng[apng]
 	virtual/libffi
-	system-sqlite? ( >=dev-db/sqlite-3.7.7.1[fts3,secure-delete,unlock-notify,debug=] )
-	webm? ( media-libs/libvpx
+	system-sqlite? ( >=dev-db/sqlite-3.7.7.1[fts3,secure-delete,threadsafe,unlock-notify,debug=] )
+	webm? ( >=media-libs/libvpx-0.9.7
 		media-libs/alsa-lib )
-	crashreporter? ( net-misc/curl )"
+	crashreporter? ( net-misc/curl )
+	selinux? ( sec-policy/selinux-mozilla )"
 # We don't use PYTHON_DEPEND/PYTHON_USE_WITH for some silly reason
 DEPEND="${RDEPEND}
 	dev-util/pkgconfig
@@ -71,11 +72,11 @@ if [[ ${PV} =~ alpha ]]; then
 	S="${WORKDIR}/mozilla-central"
 elif [[ ${PV} =~ beta ]]; then
 	SRC_URI="${SRC_URI}
-		${FTP_URI}/${MOZ_PV}/source/firefox-${MOZ_PV}.source.tar.bz2"
+		${MOZ_FTP_URI}/${MOZ_PV}/source/firefox-${MOZ_PV}.source.tar.bz2"
 	S="${WORKDIR}/mozilla-beta"
 else
 	SRC_URI="${SRC_URI}
-		${FTP_URI}/${MOZ_PV}/source/firefox-${MOZ_PV}.source.tar.bz2"
+		${MOZ_FTP_URI}/${MOZ_PV}/source/firefox-${MOZ_PV}.source.tar.bz2"
 	S="${WORKDIR}/mozilla-release"
 fi
 
@@ -92,7 +93,6 @@ pkg_setup() {
 		SESSION_MANAGER \
 		XDG_SESSION_COOKIE \
 		XAUTHORITY
-	gnome2_environment_reset
 
 	if ! use bindist; then
 		einfo
@@ -106,14 +106,6 @@ pkg_setup() {
 		einfo
 		ewarn "You will do a double build for profile guided optimization."
 		ewarn "This will result in your build taking at least twice as long as before."
-
-		addpredict /root
-		addpredict /etc/gconf
-		# Firefox tries to dri stuff when it's run, see bug 380283
-		shopt -s nullglob
-		local cards=$(echo -n /dev/{dri,ati}/card* /dev/nvidiactl* | sed 's/ /:/g')
-		shopt -u nullglob
-		test -n "${cards}" && addpredict "${cards}"
 	fi
 
 	# Ensure we have enough disk space to compile
@@ -133,6 +125,9 @@ src_unpack() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}/${PN}-9.0-include-header-fix.patch"
+	epatch "${FILESDIR}/${PN}-9.0-stl-wrapper-fix.patch"
+
 	# Apply our patches
 	EPATCH_SUFFIX="patch" \
 	EPATCH_FORCE="yes" \
@@ -169,15 +164,6 @@ src_prepare() {
 		-i "${S}"/toolkit/crashreporter/google-breakpad/src/common/linux/libcurl_wrapper.cc \
 		-i "${S}"/config/system-headers \
 		-i "${S}"/js/src/config/system-headers || die "Sed failed"
-
-	# Add missing #include directives
-	epatch "${FILESDIR}"/${P}-include-header-fix.patch
-
-	# See the patch file itself for an explanation
-	epatch "${FILESDIR}"/${P}-stl-wrapper-fix.patch
-
-	# Fix compilation with gcc-7.0
-	epatch "${FILESDIR}"/${P}-user-defined-literals-fix.patch
 
 	eautoreconf
 }
@@ -233,6 +219,28 @@ src_configure() {
 
 src_compile() {
 	if use pgo; then
+		addpredict /root
+		addpredict /etc/gconf
+		# Reset and cleanup environment variables used by GNOME/XDG
+		gnome2_environment_reset
+
+		# Firefox tries to use dri stuff when it's run, see bug 380283
+		shopt -s nullglob
+		cards=$(echo -n /dev/dri/card* | sed 's/ /:/g')
+		if test -n "${cards}"; then
+			# FOSS drivers are fine
+			addpredict "${cards}"
+		else
+			cards=$(echo -n /dev/ati/card* /dev/nvidiactl* | sed 's/ /:/g')
+			if test -n "${cards}"; then
+				# Binary drivers seem to cause access violations anyway, so
+				# let's use indirect rendering so that the device files aren't
+				# touched at all. See bug 394715.
+				export LIBGL_ALWAYS_INDIRECT=1
+			fi
+		fi
+		shopt -u nullglob
+
 		CC="$(tc-getCC)" CXX="$(tc-getCXX)" LD="$(tc-getLD)" \
 		MOZ_MAKE_FLAGS="${MAKEOPTS}" \
 		Xemake -f client.mk profiledbuild || die "Xemake failed"
@@ -304,6 +312,11 @@ src_install() {
 
 	# Plugins dir
 	share_plugins_dir
+
+	if use minimal; then
+		rm -rf "${ED}"/usr/include "${ED}${MOZILLA_FIVE_HOME}"/{idl,include,lib,sdk} || \
+			die "Failed to remove sdk and headers"
+	fi
 
 	# very ugly hack to make firefox not sigbus on sparc
 	# FIXME: is this still needed??
