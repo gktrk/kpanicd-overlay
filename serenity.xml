@@ -2,7 +2,7 @@
 <layman>
   <overlay 
     type="git"
-    src="git://git.qui-gon.org/overlay.git"
+    src="git://serenity.cs.binghamton.edu/overlay.git"
     contact="devnull@localhost"
     name="qui-gon">
       <link>http://git.qui-gon.org/?p=overlay.git</link>
