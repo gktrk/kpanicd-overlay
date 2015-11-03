@@ -11,7 +11,7 @@ HOMEPAGE="http://ffsb.sourceforge.net/"
 
 KEYWORDS="~x86"
 SLOT="0"
-LICENSE="GPL"
+LICENSE="GPL-2"
 IUSE="doc examples"
 
 src_install() {

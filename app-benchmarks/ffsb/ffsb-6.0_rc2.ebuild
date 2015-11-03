@@ -13,7 +13,7 @@ SRC_URI="http://downloads.sourceforge.net/${PN}/${MY_P}.tar.bz2"
 
 KEYWORDS="~x86"
 SLOT="0"
-LICENSE="GPL"
+LICENSE="GPL-2"
 IUSE="examples"
 
 S="${WORKDIR}/${MY_P}"
