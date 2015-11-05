@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layman>
+  <overlay
+    type="git"
+    src="https://github.com/gktrk/kpanicd-overlay.git"
+    contact="gokturk@binghamton.edu"
+    name="kpanicd">
+      <link>https://github.com/gktrk/kpanicd-overlay</link>
+      <description>
+        Gentoo overlay for stuff
+      </description>
+  </overlay>
+</layman>
