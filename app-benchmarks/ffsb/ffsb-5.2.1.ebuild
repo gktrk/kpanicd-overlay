@@ -15,7 +15,7 @@ LICENSE="GPL-2"
 IUSE="doc examples"
 
 src_install() {
-	emake DESTDIR=${D} install
+	emake DESTDIR="${D}" install
 	dodoc AUTHORS README ChangeLog USAGE
 
 	if use doc; then

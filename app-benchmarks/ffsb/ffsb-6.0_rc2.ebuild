@@ -19,7 +19,7 @@ IUSE="examples"
 S="${WORKDIR}/${MY_P}"
 
 src_install() {
-	emake DESTDIR=${D} install
+	emake DESTDIR="${D}" install
 	dodoc AUTHORS README ChangeLog
 
 	if use examples; then
