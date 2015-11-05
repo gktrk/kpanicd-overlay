@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<maintainer>
+	<email>gokturk@binghamton.edu</email>
+</maintainer>
+<longdescription>
+  layout-restore is aimed to save multi-window layout
+  and restore it automatically.
+</longdescription>
+</pkgmetadata>
