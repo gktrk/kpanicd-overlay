@@ -2,7 +2,7 @@
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
   <maintainer>
-    <name>gokturk</name>
+    <email>gokturk@binghamton.edu</email>
   </maintainer>
   <longdescription lang="en">
     The Flexible Filesystem Benchmark (FFSB) is a filesystem performance
