@@ -1,0 +1,114 @@
+From: Gokturk Yuksek <gokturk@binghamton.edu>
+Date: Wed, 4 Nov 2015 21:06:36 -0500
+Subject: [PATCH] Allow "normal" authentication method to be disabled during
+ build time
+
+Authentication method "normal" checks the system password entries (either
+/etc/passwd or /etc/shadow, depending on the configuration) to validate user
+credentials in the lock screen. When combined with other authentication
+methods, this is used as a last resort: if all the other authentication
+mechanisms fail, this method guarantees that the user will be able to unlock
+the screensaver by providing his/her credentials. The rationale behind this
+fallback mechanism is to tolerate various deficiencies in other authentication
+mechanisms such as PAM providing no way to check the presence of required PAM
+modules prior to locking and later on refusing to unlock because of missing
+modules.
+
+However, when combined with two factor authentication mechanisms such as U2F
+security tokens, this fallback mechanism undermindes the security of the
+overall system. Even when PAM is configured to fail when the said security
+token is missing, the fallback security mechanism allows lock screen to be
+unlocked successfully as long as the correct user password is provided.
+
+This patch defines the autoconf argument '--enable-auth-normal' which is set to
+"yes" by default, allowing user to build xscreensaver without the "normal"
+authentication method as a fallback. The help message is sufficiently worded to
+remind user the risks of disabling "normal" authentication system.
+
+Signed-off-by: Gokturk Yuksek <gokturk@binghamton.edu>
+
+--- a/configure.in
++++ b/configure.in
+@@ -291,6 +291,15 @@ AH_TEMPLATE([HAVE_HPUX_PASSWD],
+ 	    Passwords'' (if you have /usr/include/hpsecurity.h, you probably
+ 	    have this.) I haven't tested this one, let me know if it works.])
+ 
++AH_TEMPLATE([NO_AUTH_NORMAL],
++	    [Define this if you do not want support for the ``normal''
++	    authentication method. This method works by reading the system
++	    password entires (/etc/shadow or /etc/passwd) to authenticate
++	    the user. Note that this is the last authentication method to
++	    be tried (with respect to other methods that can be enabled
++	    such as PAM or kerberos) and without this you may get locked
++	    out of your system!])
++
+ AH_TEMPLATE([HAVE_SYSLOG],
+ 	    [Define this if you the openlog(), syslog(), and closelog()
+ 	    functions.  This is used for logging failed login attempts.])
+@@ -2410,6 +2419,28 @@ fi
+ 
+ ###############################################################################
+ #
++#	Whether to enable "normal" authentication method
++#	Check system password entries (shadow or non-shadow password) to
++#	authenticate the user as the last authentication method. Note that
++#	without this you can get locked out of your system if all the other
++#	authentication methods (if enabled any) fails.
++#
++###############################################################################
++AC_ARG_ENABLE(auth-normal, [
++  --enable-auth-normal     Enable normal authentication method as a fallback
++  --disable-auth-normal    Disable normal authentication method (risky!)],
++  [enable_auth_normal="$enableval"],[enable_auth_normal=yes])
++if test "$enable_auth_normal" = no; then
++  AC_DEFINE(NO_AUTH_NORMAL)
++  true
++elif test "$enable_auth_normal" != yes; then
++  echo "error: must be yes or no: --enable-auth-normal=$enable_auth_normal"
++  exit 1
++fi
++
++
++###############################################################################
++#
+ #       Check for external password helper
+ #	On SuSE, instead of having xscreensaver be a setuid program, they
+ #	fork an external program that takes the password on stdin, and
+@@ -3901,6 +3932,24 @@ if test "$record_anim" = yes; then
+   fi
+ fi
+ 
++
++###############################################################################
++#
++#       Make sure at least one authentication method is enabled
++#
++###############################################################################
++if test "$enable_locking" = yes; then
++   if test "$enable_auth_normal" = no; then
++      if test "$have_kerberos" = no -a "$have_pam" = no -a "$have_passwd_helper" = no; then
++          echo ""
++          AC_MSG_ERROR([You need to enable at least one authentication
++                        method. Reconfigure without disabling the ``normal''
++                        authentication method and/or any other authentication
++                        method (such as PAM or kerberos)])
++      fi
++   fi
++fi
++
+ ###############################################################################
+ #
+ #       Done testing.  Now, set up the various -I and -L variables,
+--- a/driver/passwd.c
++++ b/driver/passwd.c
+@@ -106,8 +106,12 @@ struct auth_methods methods[] = {
+   { "external",		0, ext_priv_init, ext_passwd_valid_p, 0,
+   			False, False },
+ # endif
++# ifndef NO_AUTH_NORMAL
+   { "normal",           pwent_lock_init, pwent_priv_init, pwent_passwd_valid_p, 0,
+                         False, False }
++# elif !defined(HAVE_PAM) && !defined(HAVE_KERBEROS) && !defined(PASSWD_HELPER_PROGRAM)
++#   error At least one authentication method needs to be enabled for locking
++#endif
+ };
