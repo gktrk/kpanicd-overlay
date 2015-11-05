@@ -6,7 +6,9 @@ inherit elisp
 
 DESCRIPTION="Displays the number of words in the current buffer."
 HOMEPAGE="http://http://www.emacswiki.org/emacs/WordCount"
-SRC_URI="http://taiyaki.org/elisp/word-count/src/word-count.el"
+# Old SRC_URI, looks dead. Use web archive to retrieve for now.
+OLD_SRC_URI="http://taiyaki.org/elisp/word-count/src/word-count.el"
+SRC_URI="http://web.archive.org/web/20100924082154/$OLD_SRC_URI"
 
 LICENSE="GPL-2"
 SLOT="0"
