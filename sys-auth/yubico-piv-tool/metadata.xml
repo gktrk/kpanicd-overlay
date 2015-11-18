@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <herd>proxy-maintainers</herd>
+  <maintainer>
+    <email>gokturk@binghamton.edu</email>
+    <name>Gokturk Yuksek</name>
+    <description>Proxied maintainer. Assign bugs on him</description>
+  </maintainer>
+  <longdescription>
+    The Yubico PIV tool is used for interacting with the Privilege and
+    Identification Card (PIV) application on a YubiKey.
+  </longdescription>
+  <use>
+    <flag name="debug">Enables YKCS11 debug messages</flag>
+  </use>
+</pkgmetadata>
