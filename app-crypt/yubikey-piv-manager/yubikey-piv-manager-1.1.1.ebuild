@@ -18,7 +18,7 @@ KEYWORDS="~x86 ~amd64"
 IUSE="doc"
 
 RDEPEND="
-	sys-auth/yubico-piv-tool
+	app-crypt/yubico-piv-tool
 	dev-python/pyside[${PYTHON_USEDEP},X]
 	dev-python/pycrypto[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
