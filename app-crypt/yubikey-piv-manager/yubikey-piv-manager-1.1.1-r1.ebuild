@@ -23,12 +23,19 @@ RDEPEND="
 	dev-python/pycrypto[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
 	doc? ( app-text/asciidoc )
-	dev-python/setuptools[${PYTHON_USEDEP}]"
+	dev-python/setuptools[${PYTHON_USEDEP}]
+	dev-python/nose-exclude[${PYTHON_USEDEP}]"
 
 PATCHES=(
 	# PySide does not distribute egg-info, so remove it from deps
 	"${FILESDIR}"/${PN}-fix-pyside-requirement.patch
 )
+
+python_test() {
+	# nosetests cannot handle the presence of a dir named 'setup'
+	# See https://code.google.com/p/python-nose/issues/detail?id=320
+	nosetests --exclude-dir=pivman/yubicommon/setup || die
+}
 
 python_install_all() {
 	distutils-r1_python_install_all
