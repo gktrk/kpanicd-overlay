@@ -8,7 +8,9 @@ inherit eutils
 
 DESCRIPTION="Command line tool for the YubiKey PIV application"
 HOMEPAGE="https://developers.yubico.com/yubico-piv-tool/"
-SRC_URI="https://developers.yubico.com/${PN}/Releases/${P}.tar.gz"
+SRC_URI="
+	mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
+	https://developers.yubico.com/${PN}/Releases/${P}.tar.gz"
 LICENSE="BSD-2"
 
 SLOT="0"
