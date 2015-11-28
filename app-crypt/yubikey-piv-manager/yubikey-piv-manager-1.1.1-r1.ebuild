@@ -31,6 +31,8 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-fix-pyside-requirement.patch
 )
 
+DOCS=( NEWS README )
+
 python_test() {
 	# nosetests cannot handle the presence of a dir named 'setup'
 	# See https://code.google.com/p/python-nose/issues/detail?id=320
