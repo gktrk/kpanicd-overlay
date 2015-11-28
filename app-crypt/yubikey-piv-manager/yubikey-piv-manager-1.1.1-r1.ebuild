@@ -44,4 +44,8 @@ python_install_all() {
 
 	doman man/pivman.1
 	use doc && dodoc doc/*
+
+	domenu resources/pivman.desktop
+	doicon resources/pivman.xpm
+	newicon -s 128 resources/yubikey-piv-manager.png pivman.png
 }
