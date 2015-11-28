@@ -11,4 +11,7 @@
     YubiKey PIV Manager is a graphical utility to manage keys and
     certificates stored in a PIV-enabled YubiKey.
   </longdescription>
+  <use>
+    <flag name="doc">Install documentation in asciidoc format</flag>
+  </use>
 </pkgmetadata>
