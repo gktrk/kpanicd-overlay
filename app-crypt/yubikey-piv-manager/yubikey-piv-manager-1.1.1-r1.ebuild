@@ -10,7 +10,9 @@ inherit distutils-r1
 
 DESCRIPTION="GUI tool for configuring PIV-enabled Yubikey"
 HOMEPAGE="https://developers.yubico.com/yubikey-piv-manager/"
-SRC_URI="https://developers.yubico.com/${PN}/Releases/${P}.tar.gz"
+SRC_URI="
+	mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
+	https://developers.yubico.com/${PN}/Releases/${P}.tar.gz"
 LICENSE="BSD-2"
 
 SLOT="0"
