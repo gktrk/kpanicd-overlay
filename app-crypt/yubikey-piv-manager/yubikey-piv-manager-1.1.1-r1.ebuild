@@ -22,7 +22,6 @@ RDEPEND="
 	dev-python/pyside[${PYTHON_USEDEP},X]
 	dev-python/pycrypto[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
-	doc? ( app-text/asciidoc )
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/nose-exclude[${PYTHON_USEDEP}]"
 
