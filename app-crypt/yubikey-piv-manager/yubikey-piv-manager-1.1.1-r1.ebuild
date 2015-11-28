@@ -22,7 +22,8 @@ RDEPEND="
 	dev-python/pyside[${PYTHON_USEDEP},X]
 	dev-python/pycrypto[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
-	doc? ( app-text/asciidoc )"
+	doc? ( app-text/asciidoc )
+	dev-python/setuptools[${PYTHON_USEDEP}]"
 
 PATCHES=(
 	# PySide does not distribute egg-info, so remove it from deps
