@@ -1,1 +1,2 @@
 move sys-auth/yubico-piv-tool app-crypto/yubico-piv-tool
+move sys-auth/yubikey-piv-manager app-crypto/yubikey-piv-manager
