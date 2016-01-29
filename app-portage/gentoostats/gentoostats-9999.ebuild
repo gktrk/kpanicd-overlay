@@ -2,9 +2,11 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=3
+EAPI=5
 
-inherit distutils python git-2
+PYTHON_COMPAT=( python2_7 )
+
+inherit git-r3 distutils-r1
 
 DESCRIPTION="Package statistics client"
 HOMEPAGE="http://soc.dev.gentoo.org/gentoostats"
@@ -17,29 +19,32 @@ SLOT="0"
 KEYWORDS=""
 IUSE=""
 
-DEPEND=""
-RDEPEND="${DEPEND}
-	sys-apps/portage
-	>=app-portage/gentoolkit-0.3.0.2
-	dev-python/argparse
-	dev-python/simplejson"
+RDEPEND="
+	sys-apps/portage[${PYTHON_USEDEP}]
+	>=app-portage/gentoolkit-0.3.0.2[${PYTHON_USEDEP}]
+	dev-python/simplejson[${PYTHON_USEDEP}]"
+DEPEND="${RDEPEND}
+	dev-python/setuptools[${PYTHON_USEDEP}]"
 
-src_compile() {
-	pushd "client"
-	distutils_src_compile
+python_compile() {
+	cd "${S}"/client || die
+	distutils-r1_python_compile
 }
 
-src_install() {
-	pushd "client"
-	distutils_src_install
+python_install() {
+	cd "${S}"/client || die
+	distutils-r1_python_install
+}
 
-	dodir /etc/gentoostats || die
+pytho_install_all() {
+	cd "${S}"/client || die
+	dodir /etc/gentoostats
 	insinto /etc/gentoostats
-	doins payload.cfg || die
+	doins payload.cfg
 
 	# this doesn't work, why ?
-	fowners root:portage /etc/gentoostats/payload.cfg || die
-	fperms 0640 /etc/gentoostats/payload.cfg || die
+	fowners root:portage /etc/gentoostats/payload.cfg
+	fperms 0640 /etc/gentoostats/payload.cfg
 }
 
 generate_uuid() {
@@ -56,18 +61,17 @@ generate_uuid() {
 }
 
 pkg_postinst() {
-	distutils_pkg_postinst
-
 	AUTHFILE="${ROOT}/etc/gentoostats/auth.cfg"
 	if ! [ -f "${AUTHFILE}" ]; then
 		elog "Generating uuid and password in ${AUTHFILE}"
-		touch "${AUTHFILE}"
-		echo "[AUTH]" >> "${AUTHFILE}"
-		echo -n "UUID : " >> "${AUTHFILE}"
+		mkdir -p "$(dirname ${AUTHFILE})" || die
+		touch "${AUTHFILE}" || die
+		echo "[AUTH]" >> "${AUTHFILE}" || die
+		echo -n "UUID : " >> "${AUTHFILE}" || die
 		generate_uuid >> "${AUTHFILE}"
-		echo -n "PASSWD : " >> "${AUTHFILE}"
-		< /dev/urandom tr -dc a-zA-Z0-9 | head -c16 >> "${AUTHFILE}"
+		echo -n "PASSWD : " >> "${AUTHFILE}" || die
+		< /dev/urandom tr -dc a-zA-Z0-9 | head -c16 >> "${AUTHFILE}" || die
 	fi
-	chown root:portage "${AUTHFILE}"
-	chmod 0640 "${AUTHFILE}"
+	chown root:portage "${AUTHFILE}" || die
+	chmod 0640 "${AUTHFILE}" || die
 }
