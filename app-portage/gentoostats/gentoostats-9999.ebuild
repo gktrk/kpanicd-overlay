@@ -1,6 +1,6 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Id$
 
 EAPI=3
 
@@ -10,7 +10,7 @@ DESCRIPTION="Package statistics client"
 HOMEPAGE="http://soc.dev.gentoo.org/gentoostats"
 SRC_URI=""
 
-EGIT_REPO_URI="git://git.overlays.gentoo.org/proj/gentoostats.git"
+EGIT_REPO_URI="git://anongit.gentoo.org/proj/gentoostats.git"
 
 LICENSE="GPL-3"
 SLOT="0"
