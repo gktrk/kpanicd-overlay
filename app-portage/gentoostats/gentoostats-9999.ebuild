@@ -9,7 +9,7 @@ PYTHON_COMPAT=( python2_7 )
 inherit git-r3 distutils-r1
 
 DESCRIPTION="Package statistics client"
-HOMEPAGE="http://soc.dev.gentoo.org/gentoostats"
+HOMEPAGE="https://wiki.gentoo.org/wiki/Gentoostats"
 SRC_URI=""
 
 EGIT_REPO_URI="git://anongit.gentoo.org/proj/gentoostats.git"
