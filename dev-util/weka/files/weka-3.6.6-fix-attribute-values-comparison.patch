@@ -1,0 +1,11 @@
+--- a/src/main/java/weka/core/Attribute.java
++++ b/src/main/java/weka/core/Attribute.java
+@@ -462,7 +462,7 @@
+         return false;
+       }
+       for (int i = 0; i < m_Values.size(); i++) {
+-        if (!m_Values.elementAt(i).equals(att.m_Values.elementAt(i))) {
++        if (!m_Values.contains(att.m_Values.elementAt(i))) {
+           return false;
+         }
+       }
