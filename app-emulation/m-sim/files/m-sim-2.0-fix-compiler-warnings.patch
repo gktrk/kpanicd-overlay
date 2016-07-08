@@ -1,5 +1,5 @@
---- misc.h.orig	2011-11-22 00:49:40.279392166 -0500
-+++ misc.h	2011-11-22 00:47:15.500638935 -0500
+--- a/misc.h
++++ b/misc.h
 @@ -103,11 +103,11 @@
    _fatal(__FILE__, __FUNCTION__, __LINE__, fmt, ## args)
  
@@ -97,8 +97,8 @@
  
  #ifdef HOST_HAS_QWORD
  
---- misc.c.orig	2011-11-22 00:49:36.199737283 -0500
-+++ misc.c	2011-11-22 00:48:42.485283005 -0500
+--- a/misc.c
++++ b/misc.c
 @@ -86,10 +86,10 @@
  /* declare a fatal run-time error, calls fatal hook function */
  #ifdef __GNUC__
@@ -200,8 +200,8 @@
  {
    /* temp buffer */
    char buf[2048];
---- sysprobe.c.orig	2011-11-22 01:10:01.374468182 -0500
-+++ sysprobe.c	2011-11-22 01:09:26.149480190 -0500
+--- a/sysprobe.c
++++ b/sysprobe.c
 @@ -260,8 +260,8 @@
      }
    else if (argc == 2 && !strcmp(argv[1], "-t"))
@@ -213,8 +213,8 @@
      }
  
  
---- syscall.c.orig	2011-11-22 01:12:52.392833569 -0500
-+++ syscall.c	2011-11-22 01:11:53.686859047 -0500
+--- a/syscall.c
++++ b/syscall.c
 @@ -1189,7 +1189,7 @@
      case OSF_SYS_old_recvfrom:
      case OSF_SYS_recvfrom:
@@ -242,8 +242,8 @@
  
  	/* get simulator memory parameters to host memory */
  	mem_bcopy(mem_fn, mem, Read,
---- cacti/main.c.orig	2011-11-22 02:05:06.219781024 -0500
-+++ cacti/main.c	2011-11-22 02:04:47.122278998 -0500
+--- a/cacti/main.c
++++ b/cacti/main.c
 @@ -41,6 +41,8 @@
   *------------------------------------------------------------*/
  
@@ -259,8 +259,8 @@
  }
 +
 +#undef NULL
---- cacti/io.c.orig	2011-11-22 02:04:03.026735265 -0500
-+++ cacti/io.c	2011-11-22 02:03:52.345571913 -0500
+--- a/cacti/io.c
++++ b/cacti/io.c
 @@ -41,7 +41,9 @@
  
  
@@ -276,8 +276,8 @@
  
  							   
 +#undef NULL
---- cacti/time.c.orig	2011-11-22 02:05:29.731936003 -0500
-+++ cacti/time.c	2011-11-22 02:05:43.275872900 -0500
+--- a/cacti/time.c
++++ b/cacti/time.c
 @@ -40,7 +40,10 @@
   * SOFTWARE.
   *------------------------------------------------------------*/

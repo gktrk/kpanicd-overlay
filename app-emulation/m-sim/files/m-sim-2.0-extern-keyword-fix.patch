@@ -1,5 +1,5 @@
---- machine.h.orig	2011-11-21 23:44:59.109801637 -0500
-+++ machine.h	2011-11-21 23:47:07.157580023 -0500
+--- a/machine.h
++++ b/machine.h
 @@ -220,12 +220,6 @@
      incr/decr operation specifiers */
  #define MD_MAX_MASK		2048
