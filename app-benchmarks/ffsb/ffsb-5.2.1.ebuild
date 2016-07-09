@@ -1,22 +1,20 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=4
-inherit eutils
+EAPI=6
 
 DESCRIPTION="Flexible File System Benchmark"
-SRC_URI="http://downloads.sourceforge.net/${PN}/${P}.tar.gz"
-HOMEPAGE="http://ffsb.sourceforge.net/"
+SRC_URI="https://downloads.sourceforge.net/${PN}/${P}.tar.gz"
+HOMEPAGE="https://ffsb.sourceforge.net/"
 
-KEYWORDS="~x86"
+KEYWORDS="~amd64 ~x86"
 SLOT="0"
-LICENSE="GPL-2"
+LICENSE="GPL-2+"
 IUSE="doc examples"
 
 src_install() {
-	emake DESTDIR="${D}" install
-	dodoc AUTHORS README ChangeLog USAGE
+	default
 
 	if use doc; then
 		dodoc using.tex
