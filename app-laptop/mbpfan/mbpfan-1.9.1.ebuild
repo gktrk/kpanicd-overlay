@@ -4,7 +4,7 @@
 
 EAPI=6
 
-inherit toolchain-funcs systemd
+inherit linux-info systemd toolchain-funcs
 
 DESCRIPTION="A simple daemon to control fan speed on all Macbook/Macbook Pros"
 HOMEPAGE="https://github.com/dgraziotin/mbpfan"
@@ -13,6 +13,8 @@ LICENSE="GPL-3+"
 SLOT="0"
 KEYWORDS="~amd64"
 RESTRICT="test" # will fail if the hardware is unavailable, not useful
+
+CONFIG_CHECK="~SENSORS_APPLESMC ~SENSORS_CORETEMP"
 
 src_prepare() {
 	sed -i -e "s:g++:$(tc-getCXX):g" Makefile || die
