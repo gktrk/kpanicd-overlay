@@ -15,12 +15,22 @@ SRC_URI="https://github.com/stephenjudge/TCHunt/archive/${COMMIT_HASH}.tar.gz ->
 LICENSE="GPL-3+"
 SLOT="0"
 KEYWORDS="~amd64"
+IUSE="debug"
 
 DEPEND="
 	dev-libs/boost:=[threads]
 	x11-libs/fltk
 "
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	if use debug; then
+		sed -e '/const static std::string mode =/ s/release/debug/' \
+			-i TCHunt.cpp || die
+	fi
+
+	default
+}
 
 src_compile() {
 	append-cxxflags $(fltk-config --cxxflags) -I "${EPREFIX}"/usr/include/boost
