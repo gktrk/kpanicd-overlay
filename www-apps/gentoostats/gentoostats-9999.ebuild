@@ -24,6 +24,7 @@ RDEPEND="${DEPEND}
 
 src_install() {
 	webapp_src_preinst
+	dodoc docs/server.txt
 	pushd "server" &>/dev/null || die
 
 	insinto "${MY_HTDOCSDIR}"
