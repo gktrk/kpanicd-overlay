@@ -36,15 +36,15 @@ python_install() {
 	distutils-r1_python_install
 }
 
-pytho_install_all() {
-	cd "${S}"/client || die
-	dodir /etc/gentoostats
+python_install_all() {
 	insinto /etc/gentoostats
-	doins payload.cfg
+	doins client/payload.cfg
 
 	# this doesn't work, why ?
 	fowners root:portage /etc/gentoostats/payload.cfg
 	fperms 0640 /etc/gentoostats/payload.cfg
+
+	distutils-r1_python_install_all
 }
 
 generate_uuid() {
