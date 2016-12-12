@@ -66,14 +66,14 @@ pkg_postinst() {
 	AUTHFILE="${ROOT}/etc/gentoostats/auth.cfg"
 	if ! [[ -f "${AUTHFILE}" ]]; then
 		elog "Generating uuid and password in ${AUTHFILE}"
-		mkdir -p "$(dirname ${AUTHFILE})" || die
-		touch "${AUTHFILE}" || die
-		echo "[AUTH]" >> "${AUTHFILE}" || die
-		echo -n "UUID : " >> "${AUTHFILE}" || die
+		mkdir -p "$(dirname ${AUTHFILE})"
+		touch "${AUTHFILE}"
+		echo "[AUTH]" >> "${AUTHFILE}"
+		echo -n "UUID : " >> "${AUTHFILE}"
 		generate_uuid >> "${AUTHFILE}"
-		echo -n "PASSWD : " >> "${AUTHFILE}" || die
-		< /dev/urandom tr -dc a-zA-Z0-9 | head -c16 >> "${AUTHFILE}" || die
+		echo -n "PASSWD : " >> "${AUTHFILE}"
+		< /dev/urandom tr -dc a-zA-Z0-9 | head -c16 >> "${AUTHFILE}"
 	fi
-	chown root:portage "${AUTHFILE}" || die
-	chmod 0640 "${AUTHFILE}" || die
+	chown root:portage "${AUTHFILE}"
+	chmod 0640 "${AUTHFILE}"
 }
