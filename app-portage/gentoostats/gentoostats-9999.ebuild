@@ -64,7 +64,7 @@ generate_uuid() {
 
 pkg_postinst() {
 	AUTHFILE="${ROOT}/etc/gentoostats/auth.cfg"
-	if ! [ -f "${AUTHFILE}" ]; then
+	if ! [[ -f "${AUTHFILE}" ]]; then
 		elog "Generating uuid and password in ${AUTHFILE}"
 		mkdir -p "$(dirname ${AUTHFILE})" || die
 		touch "${AUTHFILE}" || die
