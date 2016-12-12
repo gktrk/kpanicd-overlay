@@ -44,6 +44,8 @@ python_install_all() {
 	fowners root:portage /etc/gentoostats/payload.cfg
 	fperms 0640 /etc/gentoostats/payload.cfg
 
+	dodoc docs/client.txt
+
 	distutils-r1_python_install_all
 }
 
