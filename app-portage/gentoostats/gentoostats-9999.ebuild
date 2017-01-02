@@ -40,7 +40,6 @@ python_install_all() {
 	insinto /etc/gentoostats
 	doins client/payload.cfg
 
-	# this doesn't work, why ?
 	fowners root:portage /etc/gentoostats/payload.cfg
 	fperms 0640 /etc/gentoostats/payload.cfg
 
