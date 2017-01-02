@@ -1,4 +1,4 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -44,6 +44,7 @@ python_install_all() {
 	fowners root:portage /etc/gentoostats/payload.cfg
 	fperms 0640 /etc/gentoostats/payload.cfg
 
+	doman man/gentoostats-cli.1 man/gentoostats-send.1
 	dodoc docs/client.txt
 
 	distutils-r1_python_install_all
