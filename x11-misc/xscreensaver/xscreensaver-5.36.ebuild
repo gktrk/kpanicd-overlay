@@ -14,7 +14,7 @@ SRC_URI="
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="alpha amd64 arm ~arm64 hppa ia64 ~mips ppc ppc64 ~sh sparc x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~x64-solaris ~x86-solaris"
-IUSE="gdm jpeg new-login offensive opengl pam +perl selinux suid xinerama"
+IUSE="gdm jpeg new-login offensive opengl pam +perl -pwent selinux suid xinerama"
 
 COMMON_DEPEND="
 	>=gnome-base/libglade-2
