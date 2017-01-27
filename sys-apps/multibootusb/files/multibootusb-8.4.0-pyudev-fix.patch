@@ -1,0 +1,40 @@
+From 938d31412e1f16492c096f4a417d8b57fa7b1ac5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?G=C3=B6kt=C3=BCrk=20Y=C3=BCksek?= <gokturk@gentoo.org>
+Date: Thu, 26 Jan 2017 19:59:11 -0500
+Subject: [PATCH] scripts/usb.py: use device.get() instead of device[''] to
+ handle KeyError
+
+The devices returned by list_devices() may not always have all the
+properties and referencing them raises a KeyError. Use the .get()
+interface as suggested by the upstream[0] to avoid such exceptions.
+
+[0] http://pyudev.readthedocs.io/en/latest/guide.html#id6
+---
+ scripts/usb.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/usb.py b/scripts/usb.py
+index 4eb5031..35fbb02 100644
+--- a/scripts/usb.py
++++ b/scripts/usb.py
+@@ -102,7 +102,7 @@ def list(partition=1, fixed=None):
+                                                    ID_FS_USAGE="filesystem", ID_TYPE="disk",
+                                                    ID_BUS="usb"):
+                     # if device['ID_BUS'] == "usb" and device['DEVTYPE'] == "partition":
+-                    if device['ID_BUS'] in ("usb", "scsi") and device['DEVTYPE'] == "partition":
++                    if device.get('ID_BUS') in ("usb", "scsi") and device.get('DEVTYPE') == "partition":
+                         # gen.log(device['DEVNAME'])
+                         devices.append(str(device['DEVNAME']))
+             else:
+@@ -205,7 +205,7 @@ def details_udev(usb_disk_part):
+                 vendor = 'No_Vendor'
+                 model = 'No_Model'
+                 label = 'No_Label'
+-            elif device['ID_BUS'] in ("usb", "scsi") and device['DEVTYPE'] == "partition":
++            elif device.get('ID_BUS') in ("usb", "scsi") and device.get('DEVTYPE') == "partition":
+                 if (device['DEVNAME']) == usb_disk_part:
+                     uuid = str(device['ID_FS_UUID'])
+                     file_system = str(device['ID_FS_TYPE'])
+-- 
+2.10.2
+

@@ -1,0 +1,106 @@
+From fdc4b750cdb34a3acf134814785bb9585f6dfde3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?G=C3=B6kt=C3=BCrk=20Y=C3=BCksek?= <gokturk@gentoo.org>
+Date: Thu, 26 Jan 2017 21:34:32 -0500
+Subject: [PATCH] Rename the scripts directory to multibootusb
+
+Installing a package named 'scripts' is too awkward. Instead, rename
+the package to 'multibootusb'. This requires the actual script
+'multibootusb' to be moved somewhere else before 'scripts' is renamed
+to 'multibootusb'.
+---
+ multibootusb         | 16 ++++++++--------
+ scripts/install.py   |  2 +-
+ scripts/mbusb_gui.py |  2 +-
+ setup.py             |  6 +++---
+ 4 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/multibootusb b/multibootusb
+index 974726e..55c342e 100755
+--- a/multibootusb
++++ b/multibootusb
+@@ -15,16 +15,16 @@ import platform
+ # Had trouble in importing scripts directory. Had to add few lines below to ensure it works on source as well as
+ # post install
+ try:
+-    from scripts.mbusb_cli import *
+-    from scripts import admin
+-    from scripts import gen
++    from multibootusb.mbusb_cli import *
++    from multibootusb import admin
++    from multibootusb import gen
+ except:
+     try:
+-        from .scripts.mbusb_cli import *
+-        from .scripts import admin
+-        from .scripts import gen
++        from .multibootusb.mbusb_cli import *
++        from .multibootusb import admin
++        from .multibootusb import gen
+     except:
+-        import scripts
++        import multibootusb
+ 
+ gui = True
+ iso_link = None
+@@ -46,7 +46,7 @@ def usage():
+ 
+ 
+ def start_gui():
+-    from scripts import mbusb_gui
++    from multibootusb import mbusb_gui
+     gen.log('Starting multibootusb GUI...')
+     if platform.system() == 'Linux':
+         if os.getuid() != 0:
+diff --git a/scripts/install.py b/scripts/install.py
+index bf0cef5..5afdc0b 100644
+--- a/scripts/install.py
++++ b/scripts/install.py
+@@ -16,7 +16,7 @@ from .usb import *
+ from .gen import *
+ # from .iso import *
+ from . import iso
+-from scripts.update_cfg_file import *
++from multibootusb.update_cfg_file import *
+ from . import config
+ from . import persistence
+ 
+diff --git a/scripts/mbusb_gui.py b/scripts/mbusb_gui.py
+index 9f47d73..0edab64 100644
+--- a/scripts/mbusb_gui.py
++++ b/scripts/mbusb_gui.py
+@@ -13,7 +13,7 @@ import signal
+ from PyQt5 import QtCore, QtGui, QtWidgets
+ import subprocess
+ import time
+-from scripts.gui.ui_multibootusb import Ui_Dialog
++from multibootusb.gui.ui_multibootusb import Ui_Dialog
+ from . import usb
+ from .gen import *
+ from .install import *
+diff --git a/setup.py b/setup.py
+index a40f3f2..d97b9da 100644
+--- a/setup.py
++++ b/setup.py
+@@ -10,16 +10,16 @@ from distutils.core import setup
+ #from setuptools import setup, find_packages
+ import os
+ import sys
+-from scripts.gen import mbusb_version
++from multibootusb.gen import mbusb_version
+ 
+ Version = mbusb_version()
+ print(Version)
+ setup(
+     name='multibootusb',
+     version=Version,
+-    packages=['scripts', 'scripts.gui'],
++    packages=['multibootusb', 'multibootusb.gui'],
+     #packages=find_packages(),
+-    scripts=['multibootusb', 'multibootusb-pkexec'],
++    scripts=['bin/multibootusb', 'bin/multibootusb-pkexec'],
+     platforms=['Linux'],
+     url='http://multibootusb.org/',
+     license='General Public License (GPL)',
+-- 
+2.10.2
+

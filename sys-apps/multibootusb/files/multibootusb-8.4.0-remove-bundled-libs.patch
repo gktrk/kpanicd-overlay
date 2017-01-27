@@ -1,0 +1,91 @@
+From a537e66b1dab72c7006f4de2d045dbc0bd86f3ee Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?G=C3=B6kt=C3=BCrk=20Y=C3=BCksek?= <gokturk@gentoo.org>
+Date: Thu, 26 Jan 2017 21:11:21 -0500
+Subject: [PATCH] Remove bundled libs pyudev and progressbar
+
+---
+ scripts/imager.py           | 2 +-
+ scripts/install.py          | 2 +-
+ scripts/uninstall_distro.py | 2 +-
+ scripts/usb.py              | 4 ++--
+ setup.py                    | 3 +--
+ 5 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/scripts/imager.py b/scripts/imager.py
+index 89a8f69..fc065cd 100644
+--- a/scripts/imager.py
++++ b/scripts/imager.py
+@@ -20,7 +20,7 @@ from .gen import *
+ from . import iso
+ from . import usb
+ from . import config
+-from . import progressbar
++import progressbar
+ 
+ if platform.system() == "Windows":
+     import win32com.client
+diff --git a/scripts/install.py b/scripts/install.py
+index eea1dc2..bf0cef5 100644
+--- a/scripts/install.py
++++ b/scripts/install.py
+@@ -117,7 +117,7 @@ def install_progress():
+     Function to calculate progress percentage of install.
+     :return:
+     """
+-    from . import progressbar
++    import progressbar
+ 
+     usb_details = details(config.usb_disk)
+     usb_mount = usb_details['mount_point']
+diff --git a/scripts/uninstall_distro.py b/scripts/uninstall_distro.py
+index 2dcf9fe..c228171 100644
+--- a/scripts/uninstall_distro.py
++++ b/scripts/uninstall_distro.py
+@@ -165,7 +165,7 @@ def uninstall_progress():
+     Calculate uninstall progress percentage.
+     :return:
+     """
+-    from . import progressbar
++    import progressbar
+     usb_details = details(config.usb_disk)
+     usb_mount = usb_details['mount_point']
+     if platform.system() == 'Linux':
+diff --git a/scripts/usb.py b/scripts/usb.py
+index 35fbb02..1e905b3 100644
+--- a/scripts/usb.py
++++ b/scripts/usb.py
+@@ -89,7 +89,7 @@ def list(partition=1, fixed=None):
+     """
+     devices = []
+     if platform.system() == "Linux":
+-        from . import pyudev
++        import pyudev
+         import dbus
+ 
+ 
+@@ -186,7 +186,7 @@ def details_udev(usb_disk_part):
+     Get details of USB partition using udev
+     """
+     if platform.system() == "Linux":
+-        from . import pyudev
++        import pyudev
+         """
+         Try with PyUdev to get the details of USB disks.
+         This is the easiest and reliable method to find USB details.
+diff --git a/setup.py b/setup.py
+index 6bb51d5..a40f3f2 100644
+--- a/setup.py
++++ b/setup.py
+@@ -17,8 +17,7 @@ print(Version)
+ setup(
+     name='multibootusb',
+     version=Version,
+-    packages=['scripts', 'scripts.pyudev', 'scripts.pyudev.device', 'scripts.pyudev._ctypeslib', 'scripts.pyudev._os',
+-              'scripts.gui', 'scripts.progressbar'],
++    packages=['scripts', 'scripts.gui'],
+     #packages=find_packages(),
+     scripts=['multibootusb', 'multibootusb-pkexec'],
+     platforms=['Linux'],
+-- 
+2.10.2
+
