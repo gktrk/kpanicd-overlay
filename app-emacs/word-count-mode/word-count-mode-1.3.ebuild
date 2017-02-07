@@ -1,6 +1,8 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
+
+EAPI=6
 
 inherit elisp
 
@@ -8,16 +10,16 @@ DESCRIPTION="Displays the number of words in the current buffer."
 HOMEPAGE="http://http://www.emacswiki.org/emacs/WordCount"
 # Old SRC_URI, looks dead. Use web archive to retrieve for now.
 OLD_SRC_URI="http://taiyaki.org/elisp/word-count/src/word-count.el"
-SRC_URI="http://web.archive.org/web/20100924082154/$OLD_SRC_URI"
+SRC_URI="http://web.archive.org/web/20100924082154/$OLD_SRC_URI -> ${P}.el"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~sparc-fbsd ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos ~sparc-solaris ~x86-solaris"
-IUSE=""
+KEYWORDS="~amd64 ~x86"
 
 SITEFILE="50${PN}-gentoo.el"
-S="${WORKDIR}/word-count.el"
+S="${WORKDIR}"
 
 src_unpack() {
-	cp "${DISTDIR}/word-count.el" "${WORKDIR}/word-count.el"
+	cp "${DISTDIR}/${P}.el" "${S}" || die
+	elisp_src_unpack
 }
