@@ -4,4 +4,10 @@
   <maintainer type="person">
     <email>gokturk@gentoo.org</email>
   </maintainer>
+  <use>
+    <flag name="e2ntropy">
+      Build the e2ntropy tool that operates on the free disk space of
+      ext family file systems
+    </flag>
+  </use>
 </pkgmetadata>
