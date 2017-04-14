@@ -61,7 +61,7 @@ pkg_postinst() {
 	elog "You must add users to the ${PN} group to be able to access the device nodes"
 	elog
 	elog "You must create device nodes by running:"
-	elog "  # emerge --config ${P}"
+	elog "  # emerge --config ${CATEGORY}/${P}"
 }
 
 pkg_config() {
