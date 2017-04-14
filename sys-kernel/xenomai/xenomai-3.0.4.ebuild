@@ -3,7 +3,7 @@
 
 EAPI=6
 
-inherit autotools toolchain-funcs udev user
+inherit autotools flag-o-matic toolchain-funcs udev user
 
 DESCRIPTION="Realtime linux framework libraries and tools"
 HOMEPAGE="http://xenomai.org/"
@@ -41,6 +41,10 @@ src_configure() {
 		--enable-debug=$(usex debug full no)
 		$(use_enable doc doc-install)
 	)
+
+	# Don't allow user to specify the optimization
+	# Xenomai uses its own optimization flags
+	filter-flags '-O*'
 
 	econf "${myeconfargs[@]}"
 }
