@@ -13,6 +13,7 @@ IUSE="e2ntropy static-libs"
 
 if [[ ${PV} = 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/gktrk/libentropy.git"
+	inherit git-r3
 else
 	SRC_URI="https://github.com/gktrk/libentropy/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 	KEYWORDS="~x86 ~amd64"
