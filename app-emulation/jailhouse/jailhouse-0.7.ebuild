@@ -25,7 +25,7 @@ DEPEND+="
 
 src_compile() {
 	set_arch_to_kernel
-	emake all $(usex doc docs)
+	emake all $(usex doc docs "")
 }
 
 src_install() {
