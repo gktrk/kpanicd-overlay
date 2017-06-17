@@ -31,6 +31,12 @@ src_compile() {
 src_install() {
 	emake prefix="/usr" DESTDIR="${ED}" install
 
+	insinto /usr/share/"${PF}"/demos/x86
+	doins "${S}"/inmates/demos/x86/*.bin
+
+	insinto /usr/share/"${PF}"/configs
+	doins "${S}"/configs/*.cell
+
 	if use doc; then
 		insinto /usr/share/doc/"${PF}"
 		doins -r "${S}"/Documentation/generated/html
