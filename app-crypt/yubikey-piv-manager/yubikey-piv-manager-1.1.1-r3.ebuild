@@ -15,11 +15,11 @@ SRC_URI="
 LICENSE="BSD-2"
 
 SLOT="0"
-KEYWORDS="~x86 ~amd64"
+KEYWORDS="~amd64"
 IUSE="doc test"
 
 RDEPEND="
-	app-crypt/yubico-piv-tool
+	sys-auth/yubico-piv-tool
 	dev-python/pyside[${PYTHON_USEDEP},X]
 	dev-python/pycrypto[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
