@@ -15,7 +15,7 @@ KEYWORDS="~amd64"
 IUSE="debug doc +cobalt mercury"
 REQUIRED_USE="^^ ( cobalt mercury )"
 
-RDEPEND="sys-fs/fuse"
+RDEPEND="sys-fs/fuse:="
 DEPEND="${RDEPEND}
 	virtual/pkgconfig"
 
