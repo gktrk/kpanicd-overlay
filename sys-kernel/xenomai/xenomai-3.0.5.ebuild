@@ -20,7 +20,7 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig"
 
 pkg_setup() {
-:;#	enewgroup "${PN}"
+	enewgroup "${PN}"
 }
 
 src_prepare() {
