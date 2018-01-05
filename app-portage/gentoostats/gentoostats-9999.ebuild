@@ -11,7 +11,7 @@ DESCRIPTION="Package statistics client"
 HOMEPAGE="https://wiki.gentoo.org/wiki/Gentoostats"
 SRC_URI=""
 
-EGIT_REPO_URI="git://anongit.gentoo.org/proj/gentoostats.git"
+EGIT_REPO_URI="https://anongit.gentoo.org/git/proj/gentoostats.git"
 
 LICENSE="GPL-3"
 SLOT="0"
