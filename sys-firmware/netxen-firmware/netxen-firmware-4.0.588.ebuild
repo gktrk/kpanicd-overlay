@@ -11,7 +11,8 @@ LICENSE="BSD" # According to: http://ldriver.qlogic.com/firmware/LICENSE
 SLOT="0"
 KEYWORDS="~amd64"
 
-DEPEND="app-arch/rpm2targz"
+DEPEND="app-arch/rpm2targz
+	app-arch/tar"
 S="${WORKDIR}"
 
 src_unpack() {
