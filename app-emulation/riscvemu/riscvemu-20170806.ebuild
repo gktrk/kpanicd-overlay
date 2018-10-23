@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -9,7 +9,7 @@ MY_PV="${PV:0:4}-${PV:4:2}-${PV:6:2}"
 
 DESCRIPTION="RISCVEMU is a system emulator for the RISC-V architecture"
 HOMEPAGE="https://bellard.org/riscvemu/"
-SRC_URI="https://bellard.org/riscvemu/riscvemu-${MY_PV}.tar.gz"
+SRC_URI="https://bellard.org/tinyemu/riscvemu-${MY_PV}.tar.gz"
 
 LICENSE="MIT slirp? ( BSD-2 )"
 SLOT="0"
