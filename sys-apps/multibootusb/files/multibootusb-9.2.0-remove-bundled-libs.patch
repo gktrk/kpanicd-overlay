@@ -1,0 +1,68 @@
+From c10d712336afb617b1fffe165a4ab8ead8db4ed8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?G=C3=B6kt=C3=BCrk=20Y=C3=BCksek?= <gokturk@gentoo.org>
+Date: Thu, 31 Jan 2019 23:06:12 -0500
+Subject: [PATCH] Do not use and distribute built-in packages
+
+---
+ scripts/imager.py           | 2 +-
+ scripts/install.py          | 2 +-
+ scripts/uninstall_distro.py | 2 +-
+ setup.py                    | 3 +--
+ 4 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/scripts/imager.py b/scripts/imager.py
+index 5862502..ae470e6 100644
+--- a/scripts/imager.py
++++ b/scripts/imager.py
+@@ -17,7 +17,7 @@ from .gui.ui_multibootusb import Ui_MainWindow
+ from .gen import *
+ from . import iso
+ from . import config
+-from . import progressbar
++import progressbar
+ 
+ if platform.system() == "Windows":
+     import win32com.client
+diff --git a/scripts/install.py b/scripts/install.py
+index 18a1448..5b7844e 100644
+--- a/scripts/install.py
++++ b/scripts/install.py
+@@ -160,7 +160,7 @@ def install_progress():
+     Function to calculate progress percentage of install.
+     :return:
+     """
+-    from . import progressbar
++    import progressbar
+ 
+     usb_details = details(config.usb_disk)
+     config.usb_mount = usb_details['mount_point']
+diff --git a/scripts/uninstall_distro.py b/scripts/uninstall_distro.py
+index 9111677..e61b152 100644
+--- a/scripts/uninstall_distro.py
++++ b/scripts/uninstall_distro.py
+@@ -228,7 +228,7 @@ def uninstall_progress():
+     in GuiUninstallProgress.__init__.
+     :return:
+     """
+-    from . import progressbar
++    import progressbar
+     usb_details = details(config.usb_disk)
+     usb_mount = usb_details['mount_point']
+     if platform.system() == 'Linux':
+diff --git a/setup.py b/setup.py
+index 82eec3b..e714abf 100755
+--- a/setup.py
++++ b/setup.py
+@@ -47,8 +47,7 @@ def root_files(_dir):
+ setup(
+     name='multibootusb',
+     version=Version,
+-    packages=['scripts', 'scripts.pyudev', 'scripts.pyudev.device', 'scripts.pyudev._ctypeslib', 'scripts.pyudev._os',
+-              'scripts.gui', 'scripts.progressbar'],
++    packages=['scripts', 'scripts.gui'],
+     # packages=find_packages(),
+     include_package_data=True,
+     scripts=['multibootusb', 'multibootusb-pkexec'],
+-- 
+2.20.1
+

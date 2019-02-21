@@ -1,0 +1,172 @@
+From 6cb6226e3a6bd717ea71b90ec404bd10f606d639 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?G=C3=B6kt=C3=BCrk=20Y=C3=BCksek?= <gokturk@gentoo.org>
+Date: Wed, 20 Feb 2019 21:30:32 -0500
+Subject: [PATCH] Rename the scripts directory to multibootusb
+
+Installing a package named 'scripts' is too awkward. Instead, rename
+the package to 'multibootusb'. This requires the actual script
+'multibootusb' to be moved somewhere else before 'scripts' is renamed
+to 'multibootusb'.
+---
+ multibootusb         | 33 ++++++++++++---------------------
+ scripts/install.py   |  2 +-
+ scripts/mbusb_gui.py |  6 +++---
+ setup.py             |  6 +++---
+ tests/test-grub.py   |  8 ++++----
+ 5 files changed, 23 insertions(+), 32 deletions(-)
+
+diff --git a/multibootusb b/multibootusb
+index ae831e0..12f50c3 100644
+--- a/multibootusb
++++ b/multibootusb
+@@ -10,15 +10,6 @@ import getopt
+ import sys
+ import platform
+ 
+-# The following line is required for distros based on rpm so as to avoid import errors when running from
+-# installed system
+-sys.path.append('/usr/local/lib/python3.4/dist-packages')
+-sys.path.append('/usr/local/lib/python3.5/dist-packages')  # for version 8.9.0 onwards
+-
+-# Ensure that above issue doesn't occur on debian based distro as well
+-if '/usr/lib/python3/dist-packages/scripts/' not in sys.path:
+-    sys.path.append('/usr/lib/python3/dist-packages/scripts/')
+-
+ # May users install multibootusb on python 2.7 and report as multibootusb issue
+ # We need to know which version are they using so the below lines are required.
+ # We need to do this here otherwise it failes on import error
+@@ -26,21 +17,21 @@ python_version = sys.version
+ _platform = platform.platform()
+ print('Using python version ', python_version, 'on platform', _platform)
+ 
+-# Had trouble in importing scripts directory. Had to add few lines below to ensure it works on source as well as
++# Had trouble in importing multibootusb directory. Had to add few lines below to ensure it works on source as well as
+ # post install
+ try:
+-    from scripts.mbusb_cli import *
+-    from scripts import admin
+-    from scripts import gen
+-    from scripts import config
++    from multibootusb.mbusb_cli import *
++    from multibootusb import admin
++    from multibootusb import gen
++    from multibootusb import config
+ except:
+     try:
+-        from .scripts.mbusb_cli import *
+-        from .scripts import admin
+-        from .scripts import gen
+-        from .scripts import config
++        from .multibootusb.mbusb_cli import *
++        from .multibootusb import admin
++        from .multibootusb import gen
++        from .multibootusb import config
+     except:
+-        import scripts
++        import multibootusb
+ 
+ gui = True
+ uninstall = False
+@@ -123,7 +114,7 @@ Example for installing syslinux to target USB disk:
+ 
+ 
+ def start_gui():
+-    from scripts import mbusb_gui
++    from multibootusb import mbusb_gui
+     gen.log('Starting multibootusb GUI...')
+     if platform.system() == 'Linux':
+         if os.getuid() != 0:
+@@ -185,7 +176,7 @@ if __name__ == '__main__':
+             '''
+ 
+ if config.debug is True:
+-    from scripts.debug import colors
++    from multibootusb.debug import colors
+     log(colors.HEADER + "=== DEBUG ENABLED ===")
+ 
+ 
+diff --git a/scripts/install.py b/scripts/install.py
+index 5b7844e..b5153f2 100644
+--- a/scripts/install.py
++++ b/scripts/install.py
+@@ -16,7 +16,7 @@ from .usb import *
+ from .gen import *
+ # from .iso import *
+ from . import iso
+-from scripts.update_cfg_file import *
++from multibootusb.update_cfg_file import *
+ from . import config
+ from . import persistence
+ 
+diff --git a/scripts/mbusb_gui.py b/scripts/mbusb_gui.py
+index ba87a30..998013d 100644
+--- a/scripts/mbusb_gui.py
++++ b/scripts/mbusb_gui.py
+@@ -14,8 +14,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
+ import subprocess
+ import time
+ import webbrowser
+-from scripts.gui.ui_multibootusb import Ui_MainWindow
+-from scripts.gui.ui_about import Ui_About
++from multibootusb.gui.ui_multibootusb import Ui_MainWindow
++from multibootusb.gui.ui_about import Ui_About
+ from . import usb
+ from .gen import *
+ from .install import *
+@@ -31,7 +31,7 @@ from . import config
+ from . import admin
+ from . import qemu
+ from .update_cfg_file import update_distro_cfg_files
+-import scripts.gui.resources
++import multibootusb.gui.resources
+ 
+ 
+ class AppGui(qemu.Qemu, Imager, QtWidgets.QMainWindow, Ui_MainWindow):
+diff --git a/setup.py b/setup.py
+index e714abf..658c460 100755
+--- a/setup.py
++++ b/setup.py
+@@ -9,7 +9,7 @@
+ from distutils.core import setup
+ #from setuptools import setup, find_packages
+ import os
+-from scripts.gen import mbusb_version
++from multibootusb.gen import mbusb_version
+ import shutil
+ 
+ 
+@@ -47,10 +47,10 @@ def root_files(_dir):
+ setup(
+     name='multibootusb',
+     version=Version,
+-    packages=['scripts', 'scripts.gui'],
++    packages=['multibootusb', 'multibootusb.gui'],
+     # packages=find_packages(),
+     include_package_data=True,
+-    scripts=['multibootusb', 'multibootusb-pkexec'],
++    scripts=['bin/multibootusb', 'bin/multibootusb-pkexec'],
+     platforms=['Linux'],
+     url='http://multibootusb.org/',
+     license='General Public License (GPL)',
+diff --git a/tests/test-grub.py b/tests/test-grub.py
+index 2f1f457..314356f 100644
+--- a/tests/test-grub.py
++++ b/tests/test-grub.py
+@@ -4,10 +4,10 @@ import sys
+ from unittest.mock import MagicMock, patch, sentinel
+ 
+ sys.path = ['..'] + sys.path
+-from scripts import config
+-from scripts import gen
+-from scripts import grub
+-from scripts import iso
++from multibootusb import config
++from multibootusb import gen
++from multibootusb import grub
++from multibootusb import iso
+ 
+ class OpenMock:
+     def __init__(self, *args, **kw):
+-- 
+2.20.1
+
