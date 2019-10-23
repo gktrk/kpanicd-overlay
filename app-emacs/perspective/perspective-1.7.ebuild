@@ -1,9 +1,11 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+EAPI=6
 
 NEED_EMACS="23"
 
-inherit elisp git-2
+inherit elisp git-r3
 
 DESCRIPTION="Switch between named perspectives of the editor"
 HOMEPAGE="https://github.com/nex3/perspective-el"
