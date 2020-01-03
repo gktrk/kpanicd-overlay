@@ -1,0 +1,35 @@
+From 820079cc9352817f16be6200d53359e18f611ecf Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?G=C3=B6kt=C3=BCrk=20Y=C3=BCksek?= <gokturk@gentoo.org>
+Date: Fri, 3 Jan 2020 16:11:04 -0500
+Subject: [PATCH] setup.py: add 'data/tools/gptmbr.bin' to data_files
+
+Without gptmbr.bin, multibootusb fails on disks with GPT as follows:
+
+  Using gptmbr.bin for mbr install.
+  Could not find resource 'data/tools/gptmbr.bin'.
+  Traceback (most recent call last):
+    File "/usr/lib64/python3.6/site-packages/multibootusb/mbusb_gui.py", line 387, in onInstall_syslinuxClick
+      ret = syslinux_default(config.usb_disk)
+    File "/usr/lib64/python3.6/site-packages/multibootusb/syslinux.py", line 107, in syslinux_default
+      mbr_install_cmd = 'dd bs=440 count=1 conv=notrunc if=' + mbr_bin + ' of=' + usb_disk[:-1]
+  TypeError: must be str, not NoneType
+  Aborted
+---
+ setup.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/setup.py b/setup.py
+index 82eec3b..230cfc4 100755
+--- a/setup.py
++++ b/setup.py
+@@ -63,6 +63,7 @@ setup(
+     data_files=[("/usr/share/applications", ["data/multibootusb.desktop"]),
+                 ('/usr/share/pixmaps', ["data/tools/multibootusb.png"]),
+                 ('/usr/share/polkit-1/actions/', ['org.debian.pkexec.run-multibootusb.policy']),
++                ('/usr/share/multibootusb/data/tools', ["data/tools/gptmbr.bin"]),
+                 ('/usr/share/multibootusb/data/tools', ["data/tools/mbr.bin"]),
+                 ('/usr/share/multibootusb/data', ["data/version.txt"]),
+                 ('/usr/share/multibootusb/data/tools', ["data/tools/multibootusb.png"]),
+-- 
+2.24.0
+

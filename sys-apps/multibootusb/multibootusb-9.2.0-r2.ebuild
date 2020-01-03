@@ -36,6 +36,7 @@ RDEPEND="
 PATCHES=(
 	"${FILESDIR}"/${P}-remove-bundled-libs.patch
 	"${FILESDIR}"/${P}-rename-package-module.patch
+	"${FILESDIR}"/${PN}-9.2.0-gptmbr_bin-fix.patch
 )
 
 python_prepare_all() {
